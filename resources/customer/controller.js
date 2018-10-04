@@ -1,4 +1,4 @@
-class ResourceController{
+class Controller{
 
     async get(params, query, header, body){
         return {
@@ -8,4 +8,4 @@ class ResourceController{
     
 }
 
-module.exports = ResourceController;
+module.exports = Controller;

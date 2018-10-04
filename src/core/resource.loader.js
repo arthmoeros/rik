@@ -10,7 +10,7 @@ class ResourceLoader {
 
   getResourceConfig(name) {
     let resourcePath = `${RESOURCES_PATH}/${name}`;
-    let ResourceController = require(`${resourcePath}/resource-controller`);
+    let ResourceController = require(`${resourcePath}/controller`);
     let resource = {
       resourceController: new ResourceController(),
       metadata: jsYaml.load(fs.readFileSync(`${resourcePath}/metadata.yml`))

@@ -1,5 +1,0 @@
-version: v1
-get: true
-post: false
-patch: false
-delete: false

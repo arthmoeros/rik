@@ -20,7 +20,21 @@ class ResourceLoader {
     if (validationErrors.length > 0) {
       throw new Error(`Encountered validation errors on resource "${resource.metadata.name}":\n${validationErrors.join('\n')}`);
     }
+    resource.metadata.schemas = this._initSchemaFilenames(resourcePath);
     return resource;
+  }
+
+  _initSchemaFilenames(resourcePath){
+    let schemas = {};
+    schemas.getRequest = `${resourcePath}/schemas/get.request.yml`;
+    schemas.getResponse = `${resourcePath}/schemas/get.response.yml`;
+    schemas.postRequest = `${resourcePath}/schemas/post.request.yml`;
+    schemas.postResponse = `${resourcePath}/schemas/post.response.yml`;
+    schemas.patchRequest = `${resourcePath}/schemas/patch.request.yml`;
+    schemas.patchResponse = `${resourcePath}/schemas/patch.response.yml`;
+    schemas.deleteRequest = `${resourcePath}/schemas/delete.request.yml`;
+    schemas.deleteResponse = `${resourcePath}/schemas/delete.response.yml`;
+    return schemas;
   }
 
   _checkResourceControllerFunctions(resource) {

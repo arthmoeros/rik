@@ -19,6 +19,7 @@ declare namespace iunctio{
     declare class Metadata {
         version: string;
         name: string;
+        schemas: ResourceSchemas;
     }
 
     declare class ApiResponse{
@@ -26,6 +27,18 @@ declare namespace iunctio{
         body: any;
         statusCode: number;
     }
+
+    declare class ResourceSchemas{
+        getRequest: string;
+        getResponse: string;
+        postRequest: string;
+        postResponse: string;
+        patchRequest: string;
+        patchResponse: string;
+        deleteRequest: string;
+        deleteResponse: string;
+    }
+        
 }
 
 export = iunctio.ResourceLoader;

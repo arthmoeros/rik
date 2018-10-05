@@ -1,34 +1,34 @@
 declare namespace iunctio{
-    declare class ResourceLoader {
+    class ResourceLoader {
         public getResourceConfig(name: string): ResourceConfig;
         public getAvailableResourcesNames(): string[];
     }
     
-    declare class ResourceConfig {
+    class ResourceConfig {
         resourceController: ResourceController;
         metadata: Metadata;
     }
     
-    declare class ResourceController {
+    class ResourceController {
         get(params: any, query: any, header: any, body: any): ApiResponse;
         post(params: any, query: any, header: any, body: any): ApiResponse;
         patch(params: any, query: any, header: any, body: any): ApiResponse;
         delete(params: any, query: any, header: any, body: any): ApiResponse;
     }
     
-    declare class Metadata {
+    class Metadata {
         version: string;
         name: string;
         schemas: ResourceSchemas;
     }
 
-    declare class ApiResponse{
+    class ApiResponse{
         headers: any;
         body: any;
         statusCode: number;
     }
 
-    declare class ResourceSchemas{
+    class ResourceSchemas{
         getRequest: string;
         getResponse: string;
         postRequest: string;

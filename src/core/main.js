@@ -37,7 +37,7 @@ function _validate(schema, obj, handlerType, isRequest){
 }
 
 function createHandler(resource, handlerType) {
-  logger.info(`Creating handler for resource ${resource}, method ${handlerType}`);
+  logger.info(`Creating handler for resource ${resource.metadata.name}(${resource.metadata.version}), method ${handlerType}`);
   let reqSchema = _resolveSchema(resource, handlerType, 'Request');
   let resSchema = _resolveSchema(resource, handlerType, 'Response');
   return (req, res) => {

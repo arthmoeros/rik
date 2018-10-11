@@ -86,13 +86,17 @@ resources.forEach((resourceName) => {
   }
   if (resource.resourceController.patch !== undefined) {
     router.patch(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'patch'));
+    router.patch(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createHandler(resource, 'patch'));
   } else {
     router.patch(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
+    router.patch(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createDisabledHandler());
   }
   if (resource.resourceController.delete !== undefined) {
     router.delete(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'delete'));
+    router.delete(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createHandler(resource, 'delete'));
   } else {
     router.delete(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
+    router.delete(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createDisabledHandler());
   }
 });
 

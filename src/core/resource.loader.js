@@ -1,10 +1,23 @@
 const fs = require('fs');
 const jsYaml = require('js-yaml');
-const RESOURCES_PATH = process.env.IUNCTIO_HOME || `${process.cwd()}/resources`
+const logger = require('../support/iunctio-logger');
+let argumentIunctioHome = process.argv[2];
+if(argumentIunctioHome){
+  if(!argumentIunctioHome.startsWith('/')){
+    argumentIunctioHome = `${process.cwd()}/${argumentIunctioHome}`;
+  }
+}
+const RESOURCES_PATH = argumentIunctioHome || process.env.IUNCTIO_HOME || `${process.cwd()}/resources`
 
 if (!RESOURCES_PATH.startsWith('/')) {
   throw new Error('IUNCTIO_HOME must be an absolute path');
 }
+
+if(!fs.existsSync(RESOURCES_PATH)){
+  throw new Error(`Couldn't find the resources path folder -> ${RESOURCES_PATH}`);
+}
+
+logger.info(`Using resources from ${RESOURCES_PATH}`);
 
 class ResourceLoader {
 
@@ -21,6 +34,7 @@ class ResourceLoader {
       throw new Error(`Encountered validation errors on resource "${resource.metadata.name}":\n${validationErrors.join('\n')}`);
     }
     resource.metadata.schemas = this._initSchemaFilenames(resourcePath);
+    logger.info(`Loaded resource ${name}`);
     return resource;
   }
 

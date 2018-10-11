@@ -6,6 +6,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const ResourceLoader = require('./resource.loader');
+const logger = require('../support/iunctio-logger');
 const debugMode = process.env.IUNCTIO_DEBUG || false;
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,6 +21,7 @@ let resources = resourceLoader.getAvailableResourcesNames();
 function _resolveSchema(resource, handlerType, schemaType){
   let schemaFileName = resource.metadata.schemas[`${handlerType}${schemaType}`];
   if(schemaFileName){
+    logger.info(`Building JOI Schema for ${schemaFileName}`);
     return joiYml.getBuilt(schemaFileName);
   }else{
     throw new Error(`Schema type ${schemaType} for handler ${handlerType} is undefined!`);
@@ -35,6 +37,7 @@ function _validate(schema, obj, handlerType, isRequest){
 }
 
 function createHandler(resource, handlerType) {
+  logger.info(`Creating handler for resource ${resource}, method ${handlerType}`);
   let reqSchema = _resolveSchema(resource, handlerType, 'Request');
   let resSchema = _resolveSchema(resource, handlerType, 'Response');
   return (req, res) => {
@@ -102,3 +105,4 @@ resources.forEach((resourceName) => {
 
 app.use('/api', router);
 app.listen(port);
+logger.info(`Iunctio instance is listening on port ${port}`);

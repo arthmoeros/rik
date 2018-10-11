@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const joi = require('joi');
 const joiYml = require('joi-yml');
 const serializeError = require('serialize-error');

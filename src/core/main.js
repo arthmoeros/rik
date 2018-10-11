@@ -58,7 +58,7 @@ function createHandler(resource, handlerType) {
       res.send(apiResponse.body);
     }).catch((error) => {
       res.status(500);
-      res.send(`An unexpected error has ocurred, details -> ${debugMode ? serializeError(error) : error.message}`);
+      res.send(`An unexpected error has ocurred, details -> ${debugMode ? JSON.stringify(serializeError(error)) : error.message}`);
     });
   };
 }

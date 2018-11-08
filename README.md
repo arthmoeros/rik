@@ -18,6 +18,12 @@ You can use this library, for each resource you only need to:
 Having that, Iunctio will start with your resource ready to go.
 
 ## How to start it?
+First, install it on your base project:
+
+```
+npm install iunctio
+```
+
 Iunctio needs to know where to locate the resources it has three ways to do so:
 
 - First argument on Iunctio command is a relative path from where it is run.

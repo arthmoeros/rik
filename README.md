@@ -24,7 +24,7 @@ First, install it on your base project:
 npm install iunctio
 ```
 
-Iunctio needs to know where to locate the resources it has three ways to do so:
+Iunctio needs to know where to locate the resources, it has three ways to do so:
 
 - First argument on Iunctio command is a relative path from where it is run.
 - Environment variable IUNCTIO_HOME is set to an absolute path
@@ -36,7 +36,7 @@ For example:
 # will look for resources at /mydir/arg/otherresources
 me@here:/mydir$ node ./node_modules/.bin/./iunctio ./arg/otherresources
 
-# will look for resources at /mydir/arg/myresources
+# will look for resources at /anywhere/myresources
 me@here:/mydir$ export IUNCTIO_HOME=/anywhere/myresources
 me@here:/mydir$ node ./node_modules/.bin/./iunctio
 
@@ -49,7 +49,7 @@ Yes, you can do so adding a **iunctio-customization.js** file at the root of you
 
 Those functions will be called before and after (respectively) Iunctio sets up the methods for your API on the main Router.
 
-## There is an example of this?
+## Is there an example of this?
 Yes, in this repository the folder [libtest](libtest) contains a resources folder and a sample http GET request to test it, it can be run using `npm test` here.
 
 ## TO-DO

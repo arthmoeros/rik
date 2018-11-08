@@ -1,19 +1,20 @@
 const fs = require('fs');
+const path = require('path');
 const jsYaml = require('js-yaml');
 const logger = require('../support/iunctio-logger');
 let argumentIunctioHome = process.argv[2];
-if(argumentIunctioHome){
-  if(!argumentIunctioHome.startsWith('/')){
-    argumentIunctioHome = `${process.cwd()}/${argumentIunctioHome}`;
+if (argumentIunctioHome) {
+  if (!path.isAbsolute(argumentIunctioHome)) {
+    argumentIunctioHome = path.join(process.cwd(),argumentIunctioHome);
   }
 }
-const RESOURCES_PATH = argumentIunctioHome || process.env.IUNCTIO_HOME || `${process.cwd()}/resources`
+const RESOURCES_PATH = argumentIunctioHome || process.env.IUNCTIO_HOME || path.join(process.cwd(),'resources')
 
-if (!RESOURCES_PATH.startsWith('/')) {
+if (!path.isAbsolute(RESOURCES_PATH)) {
   throw new Error('IUNCTIO_HOME must be an absolute path');
 }
 
-if(!fs.existsSync(RESOURCES_PATH)){
+if (!fs.existsSync(RESOURCES_PATH)) {
   throw new Error(`Couldn't find the resources path folder -> ${RESOURCES_PATH}`);
 }
 
@@ -22,11 +23,11 @@ logger.info(`Using resources from ${RESOURCES_PATH}`);
 class ResourceLoader {
 
   getResourceConfig(name) {
-    let resourcePath = `${RESOURCES_PATH}/${name}`;
-    let ResourceController = require(`${resourcePath}/controller`);
+    let resourcePath = path.join(RESOURCES_PATH,name);
+    let ResourceController = require(path.join(resourcePath,'controller'));
     let resource = {
       resourceController: new ResourceController(),
-      metadata: jsYaml.load(fs.readFileSync(`${resourcePath}/metadata.yml`))
+      metadata: jsYaml.load(fs.readFileSync(path.join(resourcePath,'metadata.yml')))
     };
     resource.metadata.name = name;
     let validationErrors = this._checkResourceControllerFunctions(resource);
@@ -34,20 +35,19 @@ class ResourceLoader {
       throw new Error(`Encountered validation errors on resource "${resource.metadata.name}":\n${validationErrors.join('\n')}`);
     }
     resource.metadata.schemas = this._initSchemaFilenames(resourcePath);
-    logger.info(`Loaded resource ${name}`);
     return resource;
   }
 
-  _initSchemaFilenames(resourcePath){
+  _initSchemaFilenames(resourcePath) {
     let schemas = {};
-    schemas.getRequest = `${resourcePath}/schemas/get.request.yml`;
-    schemas.getResponse = `${resourcePath}/schemas/get.response.yml`;
-    schemas.postRequest = `${resourcePath}/schemas/post.request.yml`;
-    schemas.postResponse = `${resourcePath}/schemas/post.response.yml`;
-    schemas.patchRequest = `${resourcePath}/schemas/patch.request.yml`;
-    schemas.patchResponse = `${resourcePath}/schemas/patch.response.yml`;
-    schemas.deleteRequest = `${resourcePath}/schemas/delete.request.yml`;
-    schemas.deleteResponse = `${resourcePath}/schemas/delete.response.yml`;
+    schemas.getRequest = path.join(resourcePath,'schemas','get.request.yml');
+    schemas.getResponse = path.join(resourcePath,'schemas','get.response.yml');
+    schemas.postRequest = path.join(resourcePath,'schemas','post.request.yml');
+    schemas.postResponse = path.join(resourcePath,'schemas','post.response.yml');
+    schemas.patchRequest = path.join(resourcePath,'schemas','patch.request.yml');
+    schemas.patchResponse = path.join(resourcePath,'schemas','patch.response.yml');
+    schemas.deleteRequest = path.join(resourcePath,'schemas','delete.request.yml');
+    schemas.deleteResponse = path.join(resourcePath,'schemas','delete.response.yml');
     return schemas;
   }
 
@@ -60,7 +60,7 @@ class ResourceLoader {
     return validationErrors;
   }
 
-  _checkMethod(resource, method, validationErrors){
+  _checkMethod(resource, method, validationErrors) {
     let resourceController = resource.resourceController;
     if (resourceController[method] !== undefined) {
       if (resourceController[method].length !== 4) {
@@ -81,7 +81,22 @@ class ResourceLoader {
   }
 
   getAvailableResourcesNames() {
-    return fs.readdirSync(RESOURCES_PATH);
+    const dir = fs.readdirSync(RESOURCES_PATH);
+    const resources = [];
+    dir.forEach((elem) => {
+      if (fs.lstatSync(path.join(RESOURCES_PATH, elem)).isDirectory()) {
+        resources.push(elem);
+      }
+    });
+    return resources;
+  }
+
+  getExpressCustomization() {
+    let customizationPath = path.join(RESOURCES_PATH, 'iunctio-customization');
+    if (fs.existsSync(`${customizationPath}.js`)) {
+      return require(customizationPath);
+    }
+    return undefined;
   }
 
 }

@@ -12,46 +12,51 @@ const debugMode = process.env.IUNCTIO_DEBUG || false;
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-var port = process.env.PORT || 58080;
+let port = process.env.PORT || 58080;
 
-var router = express.Router();
+let apiRouter = express.Router();
 let resourceLoader = new ResourceLoader();
 let resources = resourceLoader.getAvailableResourcesNames();
 
-function _resolveSchema(resource, handlerType, schemaType){
+function _resolveSchema(resource, handlerType, schemaType) {
   let schemaFileName = resource.metadata.schemas[`${handlerType}${schemaType}`];
-  if(schemaFileName){
+  if (schemaFileName) {
     logger.info(`Building JOI Schema for ${schemaFileName}`);
     return joiYml.getBuilt(schemaFileName);
-  }else{
+  } else {
     throw new Error(`Schema type ${schemaType} for handler ${handlerType} is undefined!`);
   }
 }
 
-function _validate(schema, obj, handlerType, isRequest){
-  if(handlerType === 'get' && isRequest){
-    return joi.validate(obj.query,schema);
-  }else{
-    return joi.validate(obj.body,schema);
+function _validate(schema, obj, handlerType, isRequest) {
+  if (handlerType === 'get' && isRequest) {
+    return joi.validate(obj.query, schema);
+  } else {
+    return joi.validate(obj.body, schema);
   }
 }
 
-function createHandler(resource, handlerType) {
-  logger.info(`Creating handler for resource ${resource.metadata.name}(${resource.metadata.version}), method ${handlerType}`);
+function createHandler(resource, handlerType, uri) {
+  logger.info('================ HANDLER CREATION =================');
+  logger.info(`Resource: ${resource.metadata.name}(${resource.metadata.version})`);
+  logger.info(`Method: ${handlerType}`);
+  logger.info(`At: ${uri}`);
   let reqSchema = _resolveSchema(resource, handlerType, 'Request');
   let resSchema = _resolveSchema(resource, handlerType, 'Response');
-  return (req, res) => {
+  let handler = (req, res, next) => {
     let reqValErrors = _validate(reqSchema, req, handlerType, true);
-    if(reqValErrors && reqValErrors.error){
+    if (reqValErrors && reqValErrors.error) {
       res.status(400);
       res.send(`Sent request failed schema validation, details -> ${JSON.stringify(reqValErrors)}`);
+      next();
       return;
     }
     resource.resourceController[handlerType](req.params, req.query, req.headers, req.body).then((apiResponse) => {
       let respValErrors = _validate(resSchema, apiResponse, handlerType, false);
-      if(respValErrors && respValErrors.error){
+      if (respValErrors && respValErrors.error) {
         res.status(500);
         res.send(`Response created by service failed schema validation, details -> ${JSON.stringify(respValErrors)}`);
+        next();
         return;
       }
       for (let key in apiResponse.header) {
@@ -63,46 +68,69 @@ function createHandler(resource, handlerType) {
       res.status(500);
       res.send(`An unexpected error has ocurred, details -> ${debugMode ? JSON.stringify(serializeError(error)) : error.message}`);
     });
+    next();
   };
+  return handler;
 }
 
 function createDisabledHandler() {
   return (req, res) => {
     res.status(405);
     res.send('This method on the specified resource is not available');
+    next();
+  }
+}
+
+let expressCustomization = resourceLoader.getExpressCustomization();
+if (expressCustomization) {
+  if (expressCustomization.setupRouterBeforeApi
+    && typeof (expressCustomization.setupRouterBeforeApi) === 'function') {
+      expressCustomization.setupRouterBeforeApi(apiRouter);
+  } else {
+    logger.warn(`Found an Iunctio customization file, but it doesn't export the setupRouterBeforeApi function`);
   }
 }
 
 resources.forEach((resourceName) => {
   let resource = resourceLoader.getResourceConfig(resourceName);
+  let resourcePath = `/${resource.metadata.version}/${resource.metadata.name}`;
   if (resource.resourceController.get !== undefined) {
-    router.get(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'get'));
-    router.get(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createHandler(resource, 'get'));
+    apiRouter.get(resourcePath, createHandler(resource, 'get', resourcePath));
+    apiRouter.get(`${resourcePath}/:id`, createHandler(resource, 'get', `${resourcePath}/:id`));
   } else {
-    router.get(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
-    router.get(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createDisabledHandler());
+    apiRouter.get(resourcePath, createDisabledHandler());
+    apiRouter.get(`${resourcePath}/:id`, createDisabledHandler());
   }
   if (resource.resourceController.post !== undefined) {
-    router.post(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'post'));
+    apiRouter.post(resourcePath, createHandler(resource, 'post', resourcePath));
   } else {
-    router.post(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
+    apiRouter.post(resourcePath, createDisabledHandler());
   }
   if (resource.resourceController.patch !== undefined) {
-    router.patch(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'patch'));
-    router.patch(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createHandler(resource, 'patch'));
+    apiRouter.patch(resourcePath, createHandler(resource, 'patch', resourcePath));
+    apiRouter.patch(`${resourcePath}/:id`, createHandler(resource, 'patch', `${resourcePath}/:id`));
   } else {
-    router.patch(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
-    router.patch(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createDisabledHandler());
+    apiRouter.patch(resourcePath, createDisabledHandler());
+    apiRouter.patch(`${resourcePath}/:id`, createDisabledHandler());
   }
   if (resource.resourceController.delete !== undefined) {
-    router.delete(`/${resource.metadata.version}/${resource.metadata.name}`, createHandler(resource, 'delete'));
-    router.delete(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createHandler(resource, 'delete'));
+    apiRouter.delete(resourcePath, createHandler(resource, 'delete', resourcePath));
+    apiRouter.delete(`${resourcePath}/:id`, createHandler(resource, 'delete'));
   } else {
-    router.delete(`/${resource.metadata.version}/${resource.metadata.name}`, createDisabledHandler());
-    router.delete(`/${resource.metadata.version}/${resource.metadata.name}/:id`, createDisabledHandler());
+    apiRouter.delete(resourcePath, createDisabledHandler());
+    apiRouter.delete(`${resourcePath}/:id`, createDisabledHandler());
   }
 });
 
-app.use('/api', router);
+if (expressCustomization) {
+  if (expressCustomization.setupRouterAfterApi
+    && typeof (expressCustomization.setupRouterAfterApi) === 'function') {
+      expressCustomization.setupRouterAfterApi(apiRouter);
+  } else {
+    logger.warn(`Found an Iunctio customization file, but it doesn't export the setupRouterAfterApi function`);
+  }
+}
+
+app.use('/api', apiRouter);
 app.listen(port);
-logger.info(`Iunctio instance is listening on port ${port}`);
+logger.info(`=> Iunctio instance is listening on port ${port} <=`);

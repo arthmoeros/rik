@@ -1,7 +1,15 @@
+import { Router } from "express";
+
 declare namespace iunctio{
     class ResourceLoader {
         public getResourceConfig(name: string): ResourceConfig;
         public getAvailableResourcesNames(): string[];
+        public getExpressCustomization(): ExpressCustomization;
+    }
+
+    class ExpressCustomization {
+        public setupRouterBeforeApi(router: Router): void;
+        public setupRouterAfterApi(router: Router): void;
     }
     
     class ResourceConfig {

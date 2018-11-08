@@ -55,5 +55,6 @@ Yes, in this repository the folder [libtest](libtest) contains a resources folde
 ## TO-DO
 
 - Set a healthcheck endpoint using [iunctio-health](https://github.com/arthmoeros/iunctio-health) (yet to be tested).
-- Implement a custom logger capability (for now it only sends logging to console).
+- Implement a custom logger feature (for now it only sends logging to console).
+- Subresources feature (ie: GET /api/v1/mainResource/:id/subResource/:id)
 - Anything else that may come up.

@@ -1,1 +1,7 @@
+
+# Using apiVersion mode "uri"
 GET http://localhost:58080/api/v1/customer
+
+# Using apiVersion mode "header" with name "accept-version"
+GET http://localhost:58080/api/customer
+accept-version: v1

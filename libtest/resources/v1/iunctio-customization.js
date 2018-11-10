@@ -6,7 +6,7 @@ const express = require('express');
  */
 function setupRouterBeforeApi(router) {
   router.use((req, res, next) => {
-    console.log('Global middleware executed before api router');
+    console.log('v1 middleware executed before api router');
     next();
   });
 }
@@ -17,7 +17,7 @@ function setupRouterBeforeApi(router) {
  */
 function setupRouterAfterApi(router) {
   router.use((req, res, next) => {
-    console.log('Global middleware executed after api router');
+    console.log('v1 middleware executed after api router');
     next();
   });
 }

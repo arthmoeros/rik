@@ -1,10 +1,21 @@
 import { Router } from "express";
 
 declare namespace iunctio{
-    class ResourceLoader {
-        public getResourceConfig(name: string): ResourceConfig;
-        public getAvailableResourcesNames(): string[];
+    class IunctioHomeManager {
+        public getResourceConfig(version: string, name: string): ResourceConfig;
+        public getAvailableResources(): any;
         public getExpressCustomization(): ExpressCustomization;
+        public getSettings(): IunctioSettings;
+    }
+
+    class IunctioSettings {
+        public apiVersion: ApiVersion;
+    }
+
+    class ApiVersion {
+        public mode: string;
+        public headerName: string;
+        public headerDefaultVersion: string;
     }
 
     class ExpressCustomization {

@@ -1,21 +1,29 @@
 const joi = require('joi');
 const joiYml = require('joi-yml');
 
-function resolveSchema(resource, handlerType, schemaType) {
+function resolveIunctioSchema(resource, handlerType, schemaType) {
   let schemaFileName = resource.metadata.schemas[`${handlerType}${schemaType}`];
   if (schemaFileName) {
-    return joiYml.getBuilt(schemaFileName);
+    return resolveSchema(schemaFileName);
   } else {
     throw new Error(`Schema type ${schemaType} for handler ${handlerType} is undefined!`);
   }
 }
 
-function validate(schema, obj, handlerType, isRequest) {
+function resolveSchema(schemaFileName){
+  return joiYml.getBuilt(schemaFileName);
+}
+
+function validateIunctioObject(schema, obj, handlerType, isRequest) {
   if (handlerType === 'get' && isRequest) {
-    return joi.validate(obj.query, schema);
+    return validate(schema, obj.query);
   } else {
-    return joi.validate(obj.body, schema);
+    return validate(schema, obj.body);
   }
 }
 
-module.exports = { resolveSchema, validate };
+function validate(schema, obj){
+  return joi.validate(obj, schema);
+}
+
+module.exports = { resolveSchema, validate, resolveIunctioSchema, validateIunctioObject };

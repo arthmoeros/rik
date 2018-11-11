@@ -1,17 +1,25 @@
 const express = require('express');
 const serializeError = require('serialize-error');
 const logger = require('../../support/iunctio-logger');
-const { resolveSchema, validate } = require('./../schema-validation');
-const IunctioHomeManager = require('../iunctio-home.manager');
+const { resolveIunctioSchema, validateIunctioObject } = require('./../schema-validation');
+const iunctioHomeManager = require('../iunctio-home.manager');
 const debugMode = process.env.IUNCTIO_DEBUG || false;
 
-let iunctioHomeManager = new IunctioHomeManager();
+let iunctioSettings = iunctioHomeManager.getSettings();
+
+function _setCorsHandler(router){
+  router.options('/*', (req,res,next) => {
+    res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
+    res.setHeader('Access-Control-Allow-Methods', ['head','get','post','patch','delete']);
+    res.send();
+  });
+}
 
 function _createHandler(resource, handlerType) {
-  let reqSchema = resolveSchema(resource, handlerType, 'Request');
-  let resSchema = resolveSchema(resource, handlerType, 'Response');
+  let reqSchema = resolveIunctioSchema(resource, handlerType, 'Request');
+  let resSchema = resolveIunctioSchema(resource, handlerType, 'Response');
   let handler = (req, res, next) => {
-    let reqValErrors = validate(reqSchema, req, handlerType, true);
+    let reqValErrors = validateIunctioObject(reqSchema, req, handlerType, true);
     if (reqValErrors && reqValErrors.error) {
       res.status(400);
       res.send(`Sent request failed schema validation, details -> ${JSON.stringify(reqValErrors)}`);
@@ -19,7 +27,7 @@ function _createHandler(resource, handlerType) {
       return;
     }
     resource.resourceController[handlerType](req.params, req.query, req.headers, req.body).then((apiResponse) => {
-      let respValErrors = validate(resSchema, apiResponse, handlerType, false);
+      let respValErrors = validateIunctioObject(resSchema, apiResponse, handlerType, false);
       if (respValErrors && respValErrors.error) {
         res.status(500);
         res.send(`Response created by service failed schema validation, details -> ${JSON.stringify(respValErrors)}`);
@@ -34,6 +42,12 @@ function _createHandler(resource, handlerType) {
     }).catch((error) => {
       res.status(500);
       res.send(`An unexpected error has ocurred, details -> ${debugMode ? JSON.stringify(serializeError(error)) : error.message}`);
+      logger.error(
+        'Unexpected error',
+        `ResourceHandler#${resource.metadata.name}.${handlerType}`,
+        'Catch',
+        error
+      )
     });
     next();
   };
@@ -41,7 +55,7 @@ function _createHandler(resource, handlerType) {
 }
 
 function _createDisabledHandler() {
-  return (req, res) => {
+  return (req, res, next) => {
     res.status(405);
     res.send('This method on the specified resource is not available');
     next();
@@ -56,13 +70,19 @@ function _createDisabledHandler() {
  * @param {string[]} resources 
  */
 function setupResourcesRoutes(version, versionRouter, resources) {
-  let expressCustomization = iunctioHomeManager.getExpressCustomization(version);
-  if (expressCustomization) {
-    if (expressCustomization.setupRouterBeforeApi
-      && typeof (expressCustomization.setupRouterBeforeApi) === 'function') {
-      expressCustomization.setupRouterBeforeApi(versionRouter);
+  _setCorsHandler(versionRouter);
+
+  let iunctioCustomization = iunctioHomeManager.getExpressCustomization(version);
+  if (iunctioCustomization) {
+    if (iunctioCustomization.setupRouterBeforeApi
+      && typeof (iunctioCustomization.setupRouterBeforeApi) === 'function') {
+      iunctioCustomization.setupRouterBeforeApi(versionRouter);
     } else {
-      logger.warn(`Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterBeforeApi function`);
+      logger.warn(
+        `Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterBeforeApi function`,
+        `SetupResourcesRoutes#${version}`,
+        'SetupVersionRouterBeforeApi'
+      );
     }
   }
 
@@ -101,18 +121,23 @@ function setupResourcesRoutes(version, versionRouter, resources) {
       versionRouter.delete(`${resourcePath}/:id`, _createDisabledHandler());
     }
 
-    logger.info('=== RESOURCE CREATED ===');
-    logger.info(`API Version: ${version}`);
-    logger.info(`Name: ${resource.metadata.name}`);
-    logger.info(`Methods: ${createdMethods}`);
+    logger.info(
+      `Resource created - API Version: ${version}, Name: ${resource.metadata.name}, Methods: ${createdMethods}`,
+      `SetupResourcesRoutes#${version}`,
+      'SetupVersionRouterApi'
+    );
   });
 
-  if (expressCustomization) {
-    if (expressCustomization.setupRouterAfterApi
-      && typeof (expressCustomization.setupRouterAfterApi) === 'function') {
-      expressCustomization.setupRouterAfterApi(versionRouter);
+  if (iunctioCustomization) {
+    if (iunctioCustomization.setupRouterAfterApi
+      && typeof (iunctioCustomization.setupRouterAfterApi) === 'function') {
+      iunctioCustomization.setupRouterAfterApi(versionRouter);
     } else {
-      logger.warn(`Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterAfterApi function`);
+      logger.warn(
+        `Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterAfterApi function`,
+        `SetupResourcesRoutes#${version}`,
+        'SetupVersionRouterAfterApi'
+      );
     }
   }
 }

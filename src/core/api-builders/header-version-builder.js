@@ -1,8 +1,8 @@
 const express = require('express');
 const commonBuilder = require('./common-builder');
-const IunctioHomeManager = require('../iunctio-home.manager');
+const logger = require('../../support/iunctio-logger');
+const iunctioHomeManager = require('./../iunctio-home.manager');
 
-let iunctioHomeManager = new IunctioHomeManager();
 let iunctioSettings = iunctioHomeManager.getSettings();
 
 /**
@@ -32,6 +32,11 @@ function buildApi(apiRouter, resourcesObj) {
     if (req.headers[headerVersionName]) {
       selectedVersion = req.headers[headerVersionName];
     } else {
+      if(iunctioSettings.apiVersion.enforceVersionHeader){
+        res.status(400);
+        res.send(`Version header is required: "${headerVersionName}"`);
+        return;
+      }
       selectedVersion = defaultVersion;
     }
     if (versionRouters[selectedVersion] === undefined) {
@@ -42,6 +47,11 @@ function buildApi(apiRouter, resourcesObj) {
       } else {
         res.status(500);
         res.send(`Default api version not found: "${selectedVersion}"`);
+        logger.error(
+          `Invalid setup, setted default api version does not exists: ${selectedVersion}`,
+          'HeaderVersionBuilderMiddleware',
+          'ApiVersionCheck'
+        );
         return;
       }
     }

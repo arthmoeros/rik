@@ -1,53 +1,27 @@
 const fs = require('fs');
 const path = require('path');
-const jsYaml = require('js-yaml');
 const logger = require('../support/iunctio-logger');
 
 const REGEX_API_VERSION = /v[0-9]*/;
 
-let argumentIunctioHome = process.argv[2];
-if (argumentIunctioHome) {
-  if (!path.isAbsolute(argumentIunctioHome)) {
-    argumentIunctioHome = path.join(process.cwd(), argumentIunctioHome);
-  }
-}
-const RESOURCES_PATH = argumentIunctioHome || process.env.IUNCTIO_HOME || path.join(process.cwd(), 'resources')
-
-if (!path.isAbsolute(RESOURCES_PATH)) {
-  throw new Error('IUNCTIO_HOME must be an absolute path');
-}
-
-if (!fs.existsSync(RESOURCES_PATH)) {
-  throw new Error(`Couldn't find the resources path folder -> ${RESOURCES_PATH}`);
-}
-
-logger.info(`Using resources from ${RESOURCES_PATH}`);
-
-let settingsFilePath = path.join(RESOURCES_PATH, 'settings.yml');
-let settings;
-if(fs.existsSync(settingsFilePath)){
-  settings = jsYaml.load(fs.readFileSync(path.join(RESOURCES_PATH, 'settings.yml')));
-}else{
-  logger.warn(`Couldn't locate Iunctio settings file at: ${settingsFilePath}, using fallback settings instead`);
-  settings = {
-    apiVersion: {
-      mode: 'uri'
-    }
-  };
-}
-
-logger.info(`Iunctio will use API Version mode: ${settings.apiVersion.mode || 'uri'}`);
-
 class IunctioHomeManager {
 
+  initialize(resourcesPath){
+    this.resourcesPath = resourcesPath;
+  }
+
+  setSettings(settings){
+    this.settings = settings;
+  }
+
   getResourceConfig(version, name) {
-    let resourcePath = path.join(RESOURCES_PATH, version, name);
+    let resourcePath = path.join(this.resourcesPath, version, name);
     let ResourceController = require(path.join(resourcePath, 'controller'));
     let resource = {
       resourceController: new ResourceController(),
       metadata: {}
     };
-    //jsYaml.load(fs.readFileSync(path.join(resourcePath, 'metadata.yml')))
+    
     resource.metadata.name = name;
     let validationErrors = this._checkResourceControllerFunctions(resource);
     if (validationErrors.length > 0) {
@@ -100,10 +74,10 @@ class IunctioHomeManager {
   }
 
   getAvailableResources() {
-    const versionsList = fs.readdirSync(RESOURCES_PATH);
+    const versionsList = fs.readdirSync(this.resourcesPath);
     const resourcesObj = {};
     versionsList.forEach((versionDirName) => {
-      let versionDir = path.join(RESOURCES_PATH, versionDirName);
+      let versionDir = path.join(this.resourcesPath, versionDirName);
       if (fs.lstatSync(versionDir).isDirectory()) {
         if (REGEX_API_VERSION.test(versionDirName)) {
           resourcesObj[versionDirName] = [];
@@ -114,12 +88,20 @@ class IunctioHomeManager {
               if (fs.existsSync(path.join(resourceDir, 'controller.js'))) {
                 resourcesObj[versionDirName].push(resourceDirName);
               } else {
-                logger.warn(`Ignoring directory '${path.join(versionDirName, resourceDirName)}' found at resources path (it lacks a controller.js file)`);
+                logger.warn(
+                  `Ignoring directory '${path.join(versionDirName, resourceDirName)}' found at resources path (it lacks a controller.js file)`,
+                  'HomeManager',
+                  'GetAvailableResources'
+                );
               }
             }
           });
         } else {
-          logger.warn(`Ignoring directory '${elem}' found at resources path (it doesn't have version format)`);
+          logger.warn(
+            `Ignoring directory '${elem}' found at resources path (it doesn't have version format)`,
+            'HomeManager',
+            'GetAvailableResources'
+          );
         }
       }
     });
@@ -130,7 +112,7 @@ class IunctioHomeManager {
     if(versionPath === undefined){
       versionPath = '';
     }
-    let customizationPath = path.join(RESOURCES_PATH, versionPath, 'iunctio-customization');
+    let customizationPath = path.join(this.resourcesPath, versionPath, 'iunctio-customization');
     if (fs.existsSync(`${customizationPath}.js`)) {
       return require(customizationPath);
     }
@@ -138,9 +120,9 @@ class IunctioHomeManager {
   }
 
   getSettings(){
-    return settings;
+    return this.settings;
   }
 
 }
 
-module.exports = IunctioHomeManager;
+module.exports = new IunctioHomeManager();

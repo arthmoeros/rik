@@ -1,0 +1,15 @@
+# API Version configuration
+apiVersion:
+  # Mode, can be "uri" or "header", affects how api version is exposed
+  mode: 'string:regex=^uri|header$,required'
+  # If mode is set to "header" sets the name of the expected header with version
+  headerName: 'string:regex=^[a-zA-Z0-9_-]*$'
+  # If mode is set to "header" sets a default version in case the header is not sent
+  headerDefaultVersion: 'string:regex=^v[0-9]*$'
+  # If mode is set to "header", enforces the presence of the version header in each request (default is false)
+  enforceVersionHeader: 'boolean'
+# CORS configuration
+cors:
+  '@required': true
+  # Headers to be added to the Access-Control-Allow-Headers header
+  allowedHeaders: 'array:required'

@@ -1,5 +1,9 @@
 apiVersion:
-  #options: uri|header
   mode: header
   headerName: accept-version
-  headerDefaultVersion: v3
+  headerDefaultVersion: v1
+  enforceVersionHeader: true
+cors:
+  allowedHeaders:
+    - 'x-test'
+    - 'x-custom-header'

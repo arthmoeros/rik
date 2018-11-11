@@ -1,6 +1,6 @@
 {
   "name": "iunctio",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Library for easy deployment of proxy microservices",
   "main": "index.js",
   "scripts": {

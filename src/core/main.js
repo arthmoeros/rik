@@ -38,8 +38,8 @@ try {
   }
 
   let apiBuilder;
-  if (iunctioSettings.apiVersion.mode === 'uri') {
-    apiBuilder = require('./api-builders/uri-version-builder');
+  if (iunctioSettings.apiVersion.mode === 'path') {
+    apiBuilder = require('./api-builders/path-version-builder');
   } else if (iunctioSettings.apiVersion.mode === 'header') {
     apiBuilder = require('./api-builders/header-version-builder');
   } else {

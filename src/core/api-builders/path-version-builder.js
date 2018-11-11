@@ -2,7 +2,7 @@ const express = require('express');
 const commonBuilder = require('./common-builder');
 
 /**
- * Builds an API, including the version in the URI
+ * Builds an API, including the version in the Path
  * 
  * @param {express.Router} apiRouter 
  * @param {*} resourcesObj

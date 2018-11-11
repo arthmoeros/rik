@@ -51,8 +51,8 @@ Iunctio has a feature for additional configuration using a *settings.yml* file, 
 ```yaml
 # API Version configuration
 apiVersion:
-  # Mode, can be "uri" or "header", affects how api version is exposed and expected
-  mode: 'string:regex=^uri|header$,required'
+  # Mode, can be "path" or "header", affects how api version is exposed and expected
+  mode: 'string:regex=^path|header$,required'
   # If mode is set to "header" sets the name of the expected header with version
   headerName: 'string:regex=^[a-zA-Z0-9_-]*$'
   # If mode is set to "header" sets a default version in case the header is not sent
@@ -69,10 +69,10 @@ cors:
 This file must be located at the root of the resources folder.
 
 ## API Version handling
-Iunctio has two modes of api version exposure, "uri" and "header"
+Iunctio has two modes of api version exposure, "path" and "header"
 
-### URI mode
-In URI mode, the versioning of the api is denoted in the URI, like this:
+### Path mode
+In Path mode, the versioning of the api is denoted in the Path, like this:
 
 (Customer Resource): /api/**v1**/customer
 

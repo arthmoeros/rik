@@ -55,7 +55,7 @@ function setup(){
       );
       settings = {
         apiVersion: {
-          mode: 'uri'
+          mode: 'path'
         },
         cors: {
           allowedHeaders: []
@@ -65,7 +65,7 @@ function setup(){
     iunctioHomeManager.setSettings(settings);
     
     logger.info(
-      `Iunctio will use API Version mode: ${settings.apiVersion.mode || 'uri'}`,
+      `Iunctio will use API Version mode: ${settings.apiVersion.mode || 'path'}`,
       'Setup',
       'LoadSettings'
     );

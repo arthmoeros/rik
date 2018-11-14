@@ -39,6 +39,7 @@ function _createHandler(resource, handlerType) {
       }
       res.status(apiResponse.statusCode || 200);
       res.send(apiResponse.body);
+      next();
     }).catch((error) => {
       res.status(500);
       res.send(`An unexpected error has ocurred, details -> ${debugMode ? JSON.stringify(serializeError(error)) : error.message}`);
@@ -47,9 +48,9 @@ function _createHandler(resource, handlerType) {
         `ResourceHandler#${resource.metadata.name}.${handlerType}`,
         'Catch',
         error
-      )
+      );
+      next();
     });
-    next();
   };
   return handler;
 }

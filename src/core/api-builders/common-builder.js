@@ -27,6 +27,14 @@ function _createHandler(resource, handlerType) {
       return;
     }
     resource.resourceController[handlerType](req.params, req.query, req.headers, req.body).then((apiResponse) => {
+      if (apiResponse.statusCode
+        && apiResponse.statusCode !== 200
+        && apiResponse.statusCode !== 201) {
+        res.status(apiResponse.statusCode);
+        res.send(apiResponse.body);
+        next();
+        return;
+      }
       let respValErrors = validateIunctioObject(resSchema, apiResponse, handlerType, false);
       if (respValErrors && respValErrors.error) {
         res.status(500);

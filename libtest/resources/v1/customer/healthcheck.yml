@@ -1,0 +1,9 @@
+dependencies:
+  - name: 'google'
+    endpoint: 'https://www.google.cl'
+    timeout: 5000
+    expectedStatusCode: 200
+  - name: 'loremipsum'
+    endpoint: 'https://www.lipsum.com/'
+    timeout: 5000
+    expectedStatusCode: 200

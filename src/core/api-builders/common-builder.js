@@ -1,16 +1,18 @@
 const express = require('express');
 const serializeError = require('serialize-error');
+const iunctioHealth = require('iunctio-health');
 const logger = require('../../support/iunctio-logger');
 const { resolveIunctioSchema, validateIunctioObject } = require('./../schema-validation');
 const iunctioHomeManager = require('../iunctio-home.manager');
 const debugMode = process.env.IUNCTIO_DEBUG || false;
+const selectedResources = process.env.IUNCTIO_RESOURCES ? process.env.IUNCTIO_RESOURCES.split(',') : undefined;
 
 let iunctioSettings = iunctioHomeManager.getSettings();
 
-function _setCorsHandler(router){
-  router.options('/*', (req,res,next) => {
+function _setCorsHandler(router) {
+  router.options('/*', (req, res, next) => {
     res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
-    res.setHeader('Access-Control-Allow-Methods', ['head','get','post','patch','delete']);
+    res.setHeader('Access-Control-Allow-Methods', ['head', 'get', 'post', 'patch', 'delete']);
     res.send();
   });
 }
@@ -71,6 +73,26 @@ function _createDisabledHandler() {
   }
 }
 
+function _checkSelectiveResourceLoading(resourceName) {
+  if (selectedResources && selectedResources.length > 0 && selectedResources.indexOf(resourceName) === -1) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
+function setupHealthCheckRoutes(version, router, resources){
+  resources.forEach((resourceName) => {
+    if (_checkSelectiveResourceLoading(resourceName)) {
+      return;
+    }
+    let healthCheck = iunctioHomeManager.getHealthCheck(version, resourceName);
+    if(healthCheck){
+      iunctioHealth(router, resourceName, healthCheck, logger);
+    }
+  });
+}
+
 /**
  * Common setup of resources routes for an API
  * 
@@ -96,6 +118,9 @@ function setupResourcesRoutes(version, versionRouter, resources) {
   }
 
   resources.forEach((resourceName) => {
+    if (_checkSelectiveResourceLoading(resourceName)) {
+      return;
+    }
     let resource = iunctioHomeManager.getResourceConfig(version, resourceName);
     let resourcePath = `/${resource.metadata.name}`;
     let createdMethods = [];
@@ -151,4 +176,5 @@ function setupResourcesRoutes(version, versionRouter, resources) {
   }
 }
 
+module.exports.setupHealthCheckRoutes = setupHealthCheckRoutes;
 module.exports.setupResourcesRoutes = setupResourcesRoutes;

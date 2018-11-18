@@ -89,6 +89,17 @@ Version: v1
 
 This mode by default supports the absence of the version header providing a default version (if not specified in the settings, assumes the latest available), allowing the client to not specify the expected version. However if the setting *apiVersion.enforceVersionHeader* is set to **true**, it will respond with a *400 Bad request* asking for the explicit version header.
 
+## Selective resource loading
+If you have a baseline project with multiple resources but you need to distribute the resource loading across different Iunctio instances (like in Docker containers/services), you can indicate to Iunctio via an environment variable which resources must be loaded on a specific Iunctio instance execution.
+
+This can be achieved through setting of the environment variable *IUNCTIO_RESOURCES*, containing an string with the resources names to be loaded, separated by comma.
+
+```bash
+export IUNCTIO_RESOURCES=customer,account,contact
+```
+
+Any other existing resources in the resources folder will be skipped in the resource loading stage, if a specified resource in *IUNCTIO_RESOURCES* doesn't exists in the resources folder there is no effect.
+
 ## Extending the pre-setted Express Routers
 Iunctio lifecycle allows for additional setups to the main Express Router and for each version Express Router, providing an **iunctio-customization.js** file, which must export the *setupRouterBeforeApi* and *setupRouterAfterApi* functions, depending where you put this file (or multiple ones), they will affect the Express middleware order in different ways, to put it simply in a normal case, the order is:
 
@@ -120,13 +131,23 @@ However, it is possible to implement a custom logger to extend the logging handl
 
 Then the library user can redirect the data for each level to the logging library that fits their requirements.
 
+## Enabling HealthCheck
+Iunctio uses the [iunctio-health](https://github.com/arthmoeros/iunctio-health) utility for healthcheck endpoint setup, if a resource contains a *healthcheck.yml* file, Iunctio will expect it to comply with the following schema and load it using the [iunctio-health](https://github.com/arthmoeros/iunctio-health) utility.
+
+```yaml
+dependencies:
+  '@items':
+    name: 'string:required'
+    endpoint: 'string:required'
+    timeout: 'number:required'
+    expectedStatusCode: 'number:required'
+```
+
 ## Provided Example
 In this repository the folder [libtest](libtest) contains a resources folder and a sample http GET request to test it, it can be run using `npm test` here.
 
 ## TO-DO
 
-- Selective resource startup via environment (for more granular microservices, ideal for dockerizing).
-- Set a healthcheck endpoint using [iunctio-health](https://github.com/arthmoeros/iunctio-health) (yet to be tested).
 - Subresources feature (ie: GET /api/v1/mainResource/:id/subResource/:id).
 - Unit tests.
 - Anything else that may come up.

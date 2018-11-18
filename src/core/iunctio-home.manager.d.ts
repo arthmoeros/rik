@@ -4,10 +4,22 @@ declare namespace iunctio{
     class IunctioHomeManager {
         public initialize(resourcesPath: string): void;
         public getResourceConfig(version: string, name: string): ResourceConfig;
+        public getHealthCheck(version, name): HealthCheck;
         public getAvailableResources(): any;
         public getExpressCustomization(versionPath?: string): ExpressCustomization;
         public getSettings(): IunctioSettings;
         public setSettings(settings: IunctioSettings): void;
+    }
+
+    class HealthCheck {
+        public dependencies: Dependency[];
+    }
+
+    class Dependency {
+        public name: string;
+        public endpoint: string;
+        public timeout: number;
+        public expectedStatusCode: number;
     }
 
     class IunctioSettings {

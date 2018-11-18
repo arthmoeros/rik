@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const jsYaml = require('js-yaml');
 const logger = require('../support/iunctio-logger');
 
 const REGEX_API_VERSION = /v[0-9]*/;
@@ -29,6 +30,14 @@ class IunctioHomeManager {
     }
     resource.metadata.schemas = this._initSchemaFilenames(resourcePath);
     return resource;
+  }
+
+  getHealthCheck(version, name){
+    let healthcheckYml = path.join(this.resourcesPath, version, name,'healthcheck.yml');
+    if(fs.existsSync(healthcheckYml)){
+      return jsYaml.load(fs.readFileSync(healthcheckYml).toString());
+    }
+    return undefined;
   }
 
   _initSchemaFilenames(resourcePath) {

@@ -1,6 +1,6 @@
 {
   "name": "iunctio",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Library for easy deployment of proxy microservices",
   "main": "index.js",
   "scripts": {
@@ -19,6 +19,7 @@
   "dependencies": {
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "iunctio-health": "0.0.3",
     "joi": "^13.7.0",
     "joi-yml": "0.0.2",
     "js-yaml": "^3.12.0",

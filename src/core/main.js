@@ -24,6 +24,16 @@ try {
   let iunctioSettings = iunctioHomeManager.getSettings();
   let resourcesObj = iunctioHomeManager.getAvailableResources();
 
+  let apiBuilder;
+  if (iunctioSettings.apiVersion.mode === 'path') {
+    apiBuilder = require('./api-builders/path-version-builder');
+  } else if (iunctioSettings.apiVersion.mode === 'header') {
+    apiBuilder = require('./api-builders/header-version-builder');
+  } else {
+    throw new Error(`Unsupported apiVersion mode: ${iunctioSettings.apiVersion.mode}`);
+  }
+  apiBuilder.buildHealthChecks(apiRouter, resourcesObj);
+
   if (iunctioCustomization) {
     if (iunctioCustomization.setupRouterBeforeApi
       && typeof (iunctioCustomization.setupRouterBeforeApi) === 'function') {
@@ -37,14 +47,6 @@ try {
     }
   }
 
-  let apiBuilder;
-  if (iunctioSettings.apiVersion.mode === 'path') {
-    apiBuilder = require('./api-builders/path-version-builder');
-  } else if (iunctioSettings.apiVersion.mode === 'header') {
-    apiBuilder = require('./api-builders/header-version-builder');
-  } else {
-    throw new Error(`Unsupported apiVersion mode: ${iunctioSettings.apiVersion.mode}`);
-  }
   apiBuilder.buildApi(apiRouter, resourcesObj);
 
   if (iunctioCustomization) {

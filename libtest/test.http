@@ -9,3 +9,10 @@ accept-version: v1
 # Using apiVersion mode "header" with name "accept-version"
 OPTIONS http://localhost:58080/api
 accept-version: v1
+
+# Healthcheck example using apiVersion mode "header" with name "accept-version"
+GET http://localhost:58080/api/customer/health
+accept-version: v1
+
+# Healthcheck example using apiVersion mode "path"
+GET http://localhost:58080/api/v1/customer/health

@@ -5,6 +5,19 @@ const iunctioHomeManager = require('./../iunctio-home.manager');
 
 let iunctioSettings = iunctioHomeManager.getSettings();
 
+function buildHealthChecks(apiRouter, resourcesObj){
+  let versionRouters = {};
+  for (let version in resourcesObj) {
+    let resources = resourcesObj[version];
+    let versionRouter = express.Router();
+
+    commonBuilder.setupHealthCheckRoutes(version, versionRouter, resources);
+
+    versionRouters[version] = versionRouter;
+  }
+  _setupRouter(apiRouter, versionRouters);
+}
+
 /**
  * Builds the API, expecting a version header
  * 
@@ -22,6 +35,10 @@ function buildApi(apiRouter, resourcesObj) {
     versionRouters[version] = versionRouter;
   }
 
+  _setupRouter(apiRouter, versionRouters);
+}
+
+function _setupRouter(apiRouter, versionRouters){
   let versionList = Object.keys(versionRouters);
   let lastVersion = versionList[versionList.length - 1];
 
@@ -59,4 +76,5 @@ function buildApi(apiRouter, resourcesObj) {
   });
 }
 
+module.exports.buildHealthChecks = buildHealthChecks;
 module.exports.buildApi = buildApi;

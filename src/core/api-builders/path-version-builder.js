@@ -1,6 +1,17 @@
 const express = require('express');
 const commonBuilder = require('./common-builder');
 
+function buildHealthChecks(apiRouter, resourcesObj){
+  for (let version in resourcesObj) {
+    let resources = resourcesObj[version];
+    let versionRouter = express.Router();
+
+    commonBuilder.setupHealthCheckRoutes(version, versionRouter, resources);
+
+    apiRouter.use(`/${version}`, versionRouter);
+  }
+}
+
 /**
  * Builds an API, including the version in the Path
  * 
@@ -18,4 +29,5 @@ function buildApi(apiRouter, resourcesObj) {
   }
 }
 
+module.exports.buildHealthChecks = buildHealthChecks;
 module.exports.buildApi = buildApi;

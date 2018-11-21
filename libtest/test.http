@@ -17,6 +17,6 @@ accept-version: v1
 # Healthcheck example using apiVersion mode "path"
 GET http://localhost:58080/api/v1/customer/health
 
-# Subresource poc to test
-GET http://localhost:58080/api/v1/customer/1234/contact/5678
+# Subresource example
+GET http://localhost:58080/api/customer/1234/contact/45678
 accept-version: v1

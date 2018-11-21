@@ -81,16 +81,48 @@ function _checkSelectiveResourceLoading(resourceName) {
   }
 }
 
-function setupHealthCheckRoutes(version, router, resources){
+function setupHealthCheckRoutes(version, router, resources) {
   resources.forEach((resourceName) => {
     if (_checkSelectiveResourceLoading(resourceName)) {
       return;
     }
     let healthCheck = iunctioHomeManager.getHealthCheck(version, resourceName);
-    if(healthCheck){
+    if (healthCheck) {
       iunctioHealth(router, resourceName, healthCheck, logger);
     }
   });
+}
+
+function _setResourceVerbsHandlers(versionRouter, resource, resources) {
+  let verbs = ['get', 'post', 'patch', 'delete'];
+  let createdMethods = [];
+  verbs.forEach((verb) => {
+    let withParam = verb === 'get' || verb === 'patch' || verb === 'delete' ? true : false;
+    let resourcePath = `/${resource.metadata.name}`;
+    let parentResourcePath = `/${resource.metadata.subOf}`;
+
+    if (resource.resourceController[verb] !== undefined) {
+      let handler = _createHandler(resource, verb);
+      versionRouter[verb](resourcePath, handler);
+      if (withParam) {
+        versionRouter[verb](`${resourcePath}/:${resource.metadata.name}`, handler);
+      }
+      createdMethods.push(verb);
+      if (resource.metadata.subOf !== undefined && resources.indexOf(resource.metadata.subOf) !== -1) {
+        versionRouter[verb](`${parentResourcePath}/:${resource.metadata.subOf}/${resource.metadata.name}`, handler);
+        if (withParam) {
+          versionRouter[verb](`${parentResourcePath}/:${resource.metadata.subOf}/${resource.metadata.name}/:${resource.metadata.name}`, handler);
+        }
+        createdMethods.push(`${verb}(sub of ${resource.metadata.subOf})`);
+      }
+    } else {
+      versionRouter[verb](resourcePath, _createDisabledHandler());
+      if (withParam) {
+        versionRouter[verb](`${resourcePath}/:${resource.metadata.name}`, _createDisabledHandler());
+      }
+    }
+  });
+  return createdMethods;
 }
 
 /**
@@ -122,39 +154,7 @@ function setupResourcesRoutes(version, versionRouter, resources) {
       return;
     }
     let resource = iunctioHomeManager.getResourceConfig(version, resourceName);
-    let resourcePath = `/${resource.metadata.name}`;
-    let createdMethods = [];
-    if (resource.resourceController.get !== undefined) {
-      createdMethods.push('get');
-      versionRouter.get(resourcePath, _createHandler(resource, 'get', resourcePath, version));
-      versionRouter.get(`${resourcePath}/:id`, _createHandler(resource, 'get', `${resourcePath}/:id`, version));
-    } else {
-      versionRouter.get(resourcePath, _createDisabledHandler());
-      versionRouter.get(`${resourcePath}/:id`, _createDisabledHandler());
-    }
-    if (resource.resourceController.post !== undefined) {
-      createdMethods.push('post');
-      versionRouter.post(resourcePath, _createHandler(resource, 'post', resourcePath, version));
-    } else {
-      versionRouter.post(resourcePath, _createDisabledHandler());
-    }
-    if (resource.resourceController.patch !== undefined) {
-      createdMethods.push('patch');
-      versionRouter.patch(resourcePath, _createHandler(resource, 'patch', resourcePath, version));
-      versionRouter.patch(`${resourcePath}/:id`, _createHandler(resource, 'patch', `${resourcePath}/:id`, version));
-    } else {
-      versionRouter.patch(resourcePath, _createDisabledHandler());
-      versionRouter.patch(`${resourcePath}/:id`, _createDisabledHandler());
-    }
-    if (resource.resourceController.delete !== undefined) {
-      createdMethods.push('delete');
-      versionRouter.delete(resourcePath, _createHandler(resource, 'delete', resourcePath, version));
-      versionRouter.delete(`${resourcePath}/:id`, _createHandler(resource, 'delete', version));
-    } else {
-      versionRouter.delete(resourcePath, _createDisabledHandler());
-      versionRouter.delete(`${resourcePath}/:id`, _createDisabledHandler());
-    }
-
+    let createdMethods = _setResourceVerbsHandlers(versionRouter, resource, resources);
     logger.info(
       `Resource created - API Version: ${version}, Name: ${resource.metadata.name}, Methods: ${createdMethods}`,
       `SetupResourcesRoutes#${version}`,

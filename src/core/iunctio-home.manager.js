@@ -24,6 +24,7 @@ class IunctioHomeManager {
     };
     
     resource.metadata.name = name;
+    resource.metadata.subOf = ResourceController.subOf
     let validationErrors = this._checkResourceControllerFunctions(resource);
     if (validationErrors.length > 0) {
       throw new Error(`Encountered validation errors on resource "${resource.metadata.name}":\n${validationErrors.join('\n')}`);

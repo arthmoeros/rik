@@ -1,0 +1,2 @@
+phone: 'string:required'
+email: 'string:required'

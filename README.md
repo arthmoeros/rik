@@ -89,6 +89,39 @@ Version: v1
 
 This mode by default supports the absence of the version header providing a default version (if not specified in the settings, assumes the latest available), allowing the client to not specify the expected version. However if the setting *apiVersion.enforceVersionHeader* is set to **true**, it will respond with a *400 Bad request* asking for the explicit version header.
 
+## Resource Controller methods
+Each resource must contain a *controller.js* file, which must export an ES6 class that can contain up to four methods related to the supported http verbs: get, post, patch and delete. Each method must declare four arguments (even if in some cases some may never be used):
+
+- params (URL parameters)
+- query (query string values)
+- header (sent headers)
+- body (sent http request body parsed to json)
+
+In general the params argument will only contain the URL parameter matching the resource name, intended for example, getting a specific instance of the resource in a GET request. It may also contain another parameter if the request is done in a subresource context (see Subresource definition below).
+
+## Subresource definition
+A resource can be declared as usable as a subresource of another resource, this can be achieved by simply adding the following line in the resource controller file before the export:
+
+```js
+Controller.subOf = 'customer';
+module.exports = Controller;
+```
+
+This will inject the **subOf** value to the resource controller instance, which will be used to also set a subresource endpoint for the resource controller, resulting in two endpoints to the same resource, for example...
+
+```
+Resource "customer"
+Resource "contact" -> Declares subOf "customer"
+
+Produces the endpoints
+(GET,POST,PATCH,DELETE) /api/contact/
+(GET,PATCH,DELETE) /api/contact/:contact
+(GET,POST,PATCH,DELETE) /api/customer/:customer/contact/
+(GET,PATCH,DELETE) /api/customer/:customer/contact/:contact
+```
+
+Then each method in the resource controller must handle both cases, when it receives only the "contact" parameter or both the "contact" and "customer" parameters.
+
 ## Selective resource loading
 If you have a baseline project with multiple resources but you need to distribute the resource loading across different Iunctio instances (like in Docker containers/services), you can indicate to Iunctio via an environment variable which resources must be loaded on a specific Iunctio instance execution.
 
@@ -148,6 +181,5 @@ In this repository the folder [libtest](libtest) contains a resources folder and
 
 ## TO-DO
 
-- Subresources feature (ie: GET /api/v1/mainResource/:id/subResource/:id).
 - Unit tests.
 - Anything else that may come up.

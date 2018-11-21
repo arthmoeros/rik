@@ -1,0 +1,2 @@
+data:
+  '@items': 'object:./entity/contact.yml,required'

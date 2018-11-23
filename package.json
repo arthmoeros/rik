@@ -4,7 +4,9 @@
   "description": "Library for easy deployment of proxy microservices",
   "main": "index.js",
   "scripts": {
-    "test": "node ./src/core/main.js ./libtest/resources"
+    "libtest-start": "node ./src/core/main.js ./libtest/resources",
+    "test": "_mocha \"./src/**/*.spec.js\"",
+    "coverage": "nyc -x **/*.spec.js --reporter=lcov --reporter=cobertura --reporter=text-summary --reporter=html --cache npm test"
   },
   "repository": {
     "type": "git",
@@ -24,6 +26,13 @@
     "joi-yml": "0.0.2",
     "js-yaml": "^3.12.0",
     "serialize-error": "^2.1.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
+    "mockery": "^2.1.0",
+    "nyc": "^13.1.0",
+    "sinon": "^7.1.1"
   },
   "bin": {
     "iunctio": "./src/core/main.js"

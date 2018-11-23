@@ -1,33 +1,40 @@
 const express = require('express');
-const commonBuilder = require('./common-builder');
+const CommonBuilder = require('./common-builder');
 
-function buildHealthChecks(apiRouter, resourcesObj){
-  for (let version in resourcesObj) {
-    let resources = resourcesObj[version];
-    let versionRouter = express.Router();
+class PathVersionBuilder {
 
-    commonBuilder.setupHealthCheckRoutes(version, versionRouter, resources);
-
-    apiRouter.use(`/${version}`, versionRouter);
+  constructor(){
+    this.commonBuilder = new CommonBuilder();
   }
+
+  buildHealthChecks(apiRouter, resourcesObj){
+    for (let version in resourcesObj) {
+      let resources = resourcesObj[version];
+      let versionRouter = express.Router();
+  
+      this.commonBuilder.setupHealthCheckRoutes(version, versionRouter, resources);
+  
+      apiRouter.use(`/${version}`, versionRouter);
+    }
+  }
+  
+  /**
+   * Builds an API, including the version in the Path
+   * 
+   * @param {express.Router} apiRouter 
+   * @param {*} resourcesObj
+   */
+  buildApi(apiRouter, resourcesObj) {
+    for (let version in resourcesObj) {
+      let resources = resourcesObj[version];
+      let versionRouter = express.Router();
+  
+      this.commonBuilder.setupResourcesRoutes(version, versionRouter, resources);
+  
+      apiRouter.use(`/${version}`, versionRouter);
+    }
+  }
+  
 }
 
-/**
- * Builds an API, including the version in the Path
- * 
- * @param {express.Router} apiRouter 
- * @param {*} resourcesObj
- */
-function buildApi(apiRouter, resourcesObj) {
-  for (let version in resourcesObj) {
-    let resources = resourcesObj[version];
-    let versionRouter = express.Router();
-
-    commonBuilder.setupResourcesRoutes(version, versionRouter, resources);
-
-    apiRouter.use(`/${version}`, versionRouter);
-  }
-}
-
-module.exports.buildHealthChecks = buildHealthChecks;
-module.exports.buildApi = buildApi;
+module.exports = PathVersionBuilder;

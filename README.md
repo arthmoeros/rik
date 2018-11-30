@@ -182,4 +182,6 @@ In this repository the folder [libtest](libtest) contains a resources folder and
 ## TO-DO
 
 - Unit tests.
+- make it stoppable "gracefully"
+- feature to add non-resource folders at the resources folders
 - Anything else that may come up.

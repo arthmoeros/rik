@@ -37,7 +37,7 @@ class IunctioLogger {
 
   error(message, component, stage, error) {
     if (this.customLogger) {
-      this.customLogger.warn({
+      this.customLogger.error({
         message,
         component,
         stage,

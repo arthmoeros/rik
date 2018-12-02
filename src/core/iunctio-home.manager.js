@@ -108,7 +108,7 @@ class IunctioHomeManager {
           });
         } else {
           logger.warn(
-            `Ignoring directory '${elem}' found at resources path (it doesn't have version format)`,
+            `Ignoring directory '${versionDirName}' found at resources path (it doesn't have version format)`,
             'HomeManager',
             'GetAvailableResources'
           );

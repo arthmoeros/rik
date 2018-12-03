@@ -66,7 +66,7 @@ function setup() {
   iunctioHomeManager.setSettings(settings);
 
   logger.info(
-    `Iunctio will use API Version mode: ${settings.apiVersion.mode || 'path'}`,
+    `Iunctio will use API Version mode: ${settings.apiVersion.mode}`,
     'Setup',
     'LoadSettings'
   );

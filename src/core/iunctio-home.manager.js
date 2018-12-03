@@ -94,7 +94,7 @@ class IunctioHomeManager {
           let resourcesList = fs.readdirSync(versionDir);
           resourcesList.forEach((resourceDirName) => {
             let resourceDir = path.join(versionDir, resourceDirName);
-            if (fs.lstatSync(resourceDir).isDirectory()) {
+            if (fs.lstatSync(resourceDir).isDirectory() && !resourceDirName.startsWith('_')) {
               if (fs.existsSync(path.join(resourceDir, 'controller.js'))) {
                 resourcesObj[versionDirName].push(resourceDirName);
               } else {

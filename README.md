@@ -133,6 +133,17 @@ export IUNCTIO_RESOURCES=customer,account,contact
 
 Any other existing resources in the resources folder will be skipped in the resource loading stage, if a specified resource in *IUNCTIO_RESOURCES* doesn't exists in the resources folder there is no effect.
 
+## Utility folders in version folder
+You can intentionally instruct Iunctio to skip some folders in the resource loading stage, by prefixing them with underscore in their name, this can be used for a folder that you intend to keep also versioned within the API but is not a resource (ie: model, services, etc...).
+
+```bash
+resources
+|- v1
+  |- _services #<- Will be ignored
+  |- contact
+  |- customer
+```
+
 ## Extending the pre-setted Express Routers
 Iunctio lifecycle allows for additional setups to the main Express Router and for each version Express Router, providing an **iunctio-customization.js** file, which must export the *setupRouterBeforeApi* and *setupRouterAfterApi* functions, depending where you put this file (or multiple ones), they will affect the Express middleware order in different ways, to put it simply in a normal case, the order is:
 
@@ -181,7 +192,6 @@ In this repository the folder [libtest](libtest) contains a resources folder and
 
 ## TO-DO
 
-- Unit tests.
 - make it stoppable "gracefully"
-- feature to add non-resource folders at the resources folders
+- Refactoring Unit tests.
 - Anything else that may come up.

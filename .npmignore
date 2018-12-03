@@ -1,2 +1,3 @@
 libtest
 coverage
+**/*spec.js

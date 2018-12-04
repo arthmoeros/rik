@@ -202,5 +202,6 @@ In this repository the folder [libtest](libtest) contains a resources folder and
 ## TO-DO
 
 - make it stoppable "gracefully"
+- allow a better api version structure
 - Refactoring Unit tests.
 - Anything else that may come up.

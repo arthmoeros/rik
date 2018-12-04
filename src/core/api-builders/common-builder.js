@@ -87,7 +87,8 @@ class CommonBuilder {
   _setCorsHandler(router) {
     router.options('/*', (req, res, next) => {
       res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
-      res.setHeader('Access-Control-Allow-Methods', ['head', 'get', 'post', 'patch', 'delete']);
+      res.setHeader('Access-Control-Allow-Methods', ['HEAD', 'GET', 'POST', 'PATCH', 'DELETE', 'PUT']);
+      res.setHeader('Access-Control-Allow-Origin', '*');
       res.send();
     });
   }

@@ -480,6 +480,7 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     let handler = builder._createHandler(resourceConfigMock, 'get');
     let mockRes = {
+      setHeader: sinon.spy(),
       status: sinon.spy(),
       send: sinon.spy()
     };
@@ -534,6 +535,7 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     let handler = builder._createHandler(resourceConfigMock, 'get');
     let mockRes = {
+      setHeader: sinon.spy(),
       status: sinon.spy(),
       send: sinon.spy()
     };

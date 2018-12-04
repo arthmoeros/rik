@@ -46,13 +46,19 @@ describe('Main', () => {
       buildHealthChecks: sinon.stub(),
       buildApi: sinon.stub()
     };
+    let mockApiBuilderClass = class ApiBuilder {
+      constructor(){
+        this.buildHealthChecks = mockApiBuilder.buildHealthChecks;
+        this.buildApi = mockApiBuilder.buildApi;
+      }
+    };
 
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
     mockery.registerMock('./iunctio-home.manager', mockHomeManager);
-    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilder);
-    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilder);
+    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
+    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
     require('./main');
     
@@ -87,13 +93,19 @@ describe('Main', () => {
       buildHealthChecks: sinon.stub(),
       buildApi: sinon.stub()
     };
+    let mockApiBuilderClass = class ApiBuilder {
+      constructor(){
+        this.buildHealthChecks = mockApiBuilder.buildHealthChecks;
+        this.buildApi = mockApiBuilder.buildApi;
+      }
+    };
 
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
     mockery.registerMock('./iunctio-home.manager', mockHomeManager);
-    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilder);
-    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilder);
+    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
+    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
     require('./main');
     
@@ -123,13 +135,19 @@ describe('Main', () => {
       buildHealthChecks: sinon.stub(),
       buildApi: sinon.stub()
     };
+    let mockApiBuilderClass = class ApiBuilder {
+      constructor(){
+        this.buildHealthChecks = mockApiBuilder.buildHealthChecks;
+        this.buildApi = mockApiBuilder.buildApi;
+      }
+    };
 
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
     mockery.registerMock('./iunctio-home.manager', mockHomeManager);
-    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilder);
-    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilder);
+    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
+    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
     require('./main');
     
@@ -159,13 +177,19 @@ describe('Main', () => {
       buildHealthChecks: sinon.stub(),
       buildApi: sinon.stub()
     };
+    let mockApiBuilderClass = class ApiBuilder {
+      constructor(){
+        this.buildHealthChecks = mockApiBuilder.buildHealthChecks;
+        this.buildApi = mockApiBuilder.buildApi;
+      }
+    };
 
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
     mockery.registerMock('./iunctio-home.manager', mockHomeManager);
-    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilder);
-    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilder);
+    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
+    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
     try {
       require('./main'); 

@@ -104,6 +104,9 @@ class CommonBuilder {
         return;
       }
       resource.resourceController[handlerType](req.params, req.query, req.headers, req.body).then((apiResponse) => {
+        res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
+        res.setHeader('Access-Control-Allow-Methods', ['HEAD', 'GET', 'POST', 'PATCH', 'DELETE', 'PUT']);
+        res.setHeader('Access-Control-Allow-Origin', '*');
         if (apiResponse.statusCode
           && apiResponse.statusCode !== 200
           && apiResponse.statusCode !== 201) {

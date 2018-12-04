@@ -8,15 +8,24 @@ If you want to save yourself the trouble of:
 - Setting up Express Routers for an apt REST API.
 - Data validation for requests and responses on your API.
 - Without losing the capability of customizing the Express main Router.
-- Better organization of your API versions
+- Better organization of your API versions.
 
 You can use this library, for each resource you only need to:
 
 - Write a js file defining your controller via a ES6 class and four methods: get, post, patch and delete.
-- Put it in a "version" folder
-- Write schemas using yaml [joi-json](https://github.com/vandium-io/joi-json) based files, for each method and request/response
+- Put it in a "version" folder.
+- Write schemas using yaml [joi-json](https://github.com/vandium-io/joi-json) based files, for each method and request/response.
 
-Having that, Iunctio will start with your resources ready to go.
+Having that, Iunctio will start with your resources ready to go, or said in another way...
+
+Having this controller and its validation schemas...
+
+![Example Step 1 Iunctio](https://raw.githubusercontent.com/arthmoeros/iunctio/master/docs/aux1.png)
+
+
+You will have a working API like this...
+
+![Example Step 2 Iunctio](https://raw.githubusercontent.com/arthmoeros/iunctio/master/docs/aux2.png)
 
 ## Running it
 First, install it on your base project:

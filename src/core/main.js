@@ -23,15 +23,17 @@ function main(){
     let apiRouter = express.Router();
     let iunctioSettings = iunctioHomeManager.getSettings();
     let resourcesObj = iunctioHomeManager.getAvailableResources();
-  
-    let apiBuilder;
+    
+    let ApiBuilderType;
     if (iunctioSettings.apiVersion.mode === 'path') {
-      apiBuilder = require('./api-builders/path-version-builder');
+      ApiBuilderType = require('./api-builders/path-version-builder');
     } else if (iunctioSettings.apiVersion.mode === 'header') {
-      apiBuilder = require('./api-builders/header-version-builder');
+      ApiBuilderType = require('./api-builders/header-version-builder');
     } else {
       throw new Error(`Unsupported apiVersion mode: ${iunctioSettings.apiVersion.mode}`);
     }
+    
+    let apiBuilder = new ApiBuilderType();
     apiBuilder.buildHealthChecks(apiRouter, resourcesObj);
   
     if (iunctioCustomization) {

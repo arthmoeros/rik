@@ -1,3 +1,4 @@
 libtest
 coverage
 **/*spec.js
+docs

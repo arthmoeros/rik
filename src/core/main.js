@@ -72,7 +72,6 @@ function main(){
       'IunctioStarted'
     );
     process.on('SIGINT', closeServerCallback(server, 'SIGINT'));
-    process.on('SIGKILL', closeServerCallback(server, 'SIGKILL'));
     process.on('SIGTERM', closeServerCallback(server, 'SIGTERM'));
   } catch (error) {
     logger.error(

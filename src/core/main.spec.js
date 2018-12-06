@@ -203,6 +203,55 @@ describe('Main', () => {
     }
   });
 
+  it('should stop gracefully on SIGINT, SIGTERM and SIGKILL', () => {
+    let mockSetup = sinon.stub();
+    let mockServer = {
+      close: sinon.stub()
+    };
+    let homeManagerReturns = {
+      getExpressCustomization: {
+        getCustomLogger: sinon.stub().returns({}),
+        setupRouterBeforeApi: sinon.stub(),
+        setupRouterAfterApi: sinon.stub()
+      },
+      getSettings: {
+        apiVersion: {
+          mode: 'path'
+        }
+      },
+      getAvailableResources: []
+    };
+    let mockHomeManager = getMockHomeManager(homeManagerReturns);
+    let mockExpress = getMockExpress({listen: mockServer});
+    let mockBodyParser = getMockBodyParser();
+    let mockApiBuilder = {
+      buildHealthChecks: sinon.stub(),
+      buildApi: sinon.stub()
+    };
+    let mockApiBuilderClass = class ApiBuilder {
+      constructor(){
+        this.buildHealthChecks = mockApiBuilder.buildHealthChecks;
+        this.buildApi = mockApiBuilder.buildApi;
+      }
+    };
+
+    mockery.registerMock('./setup', mockSetup);
+    mockery.registerMock('express', mockExpress);
+    mockery.registerMock('body-parser', mockBodyParser);
+    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
+    mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
+
+    let bkProcessOn = process.on;
+    process.on = (event, cb) => {
+      cb();
+    };
+    require('./main');
+    process.on = bkProcessOn;
+
+    expect(mockServer.close.calledThrice).to.be.true;
+  });
+
 });
 
 function getMockHomeManager(returns){
@@ -214,9 +263,10 @@ function getMockHomeManager(returns){
 }
 
 function getMockExpress(returns){
+  returns = returns !== undefined ? returns : {};
   let mockInstance = {
     use: sinon.stub(),
-    listen: sinon.stub()
+    listen: sinon.stub().returns(returns.listen)
   };
   let mockExpress = sinon.stub().returns(mockInstance);
   mockExpress.mockInstance = mockInstance

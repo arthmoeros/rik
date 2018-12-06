@@ -42,7 +42,7 @@ describe('IunctioHomeManager', () => {
     }
     MockResourceController.subOf = 'parentDummy';
 
-    mockery.registerMock(path.join('.','v1','dummy','controller'), MockResourceController);
+    mockery.registerMock(path.join('.','v1','resources','dummy','controller'), MockResourceController);
 
     let resource = homeManager.getResourceConfig('v1', 'dummy');
 
@@ -61,7 +61,7 @@ describe('IunctioHomeManager', () => {
     }
     MockResourceController.subOf = 'parentDummy';
 
-    mockery.registerMock(path.join('.','v1','dummy','controller'), MockResourceController);
+    mockery.registerMock(path.join('.','v1','resources','dummy','controller'), MockResourceController);
     try {
       homeManager.getResourceConfig('v1', 'dummy');
       expect(true, 'expected thrown error').to.be.false;
@@ -81,7 +81,7 @@ describe('IunctioHomeManager', () => {
     }
     MockResourceController.subOf = 'parentDummy';
 
-    mockery.registerMock(path.join('.','v1','dummy','controller'), MockResourceController);
+    mockery.registerMock(path.join('.','v1','resources','dummy','controller'), MockResourceController);
     try {
       homeManager.getResourceConfig('v1', 'dummy');
       expect(true, 'expected thrown error').to.be.false;
@@ -106,7 +106,7 @@ describe('IunctioHomeManager', () => {
     
     const homeManager = require('./iunctio-home.manager');
     homeManager.initialize('.');
-    let hc = homeManager.getHealthCheck('v1', 'dummy');
+    let hc = homeManager.getHealthCheck('v1', 'resources', 'dummy');
 
     expect(hc).to.be.eq('mock healthcheck');
     expect(mockFS.existsSync.called).to.be.true;
@@ -128,7 +128,7 @@ describe('IunctioHomeManager', () => {
     
     const homeManager = require('./iunctio-home.manager');
     homeManager.initialize('.');
-    let hc = homeManager.getHealthCheck('v1', 'dummy');
+    let hc = homeManager.getHealthCheck('v1', 'resources', 'dummy');
 
     expect(hc).to.be.undefined;
     expect(mockFS.existsSync.called).to.be.true;

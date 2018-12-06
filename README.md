@@ -3,6 +3,8 @@ A framework for easy development of REST APIs using an Express definition layer.
 
 ***Requires native Async/Await support, Node 8 or later is recommended***
 
+**WARNING!, breaking changes in 1.1, resources now must be put inside a "resources" folder inside the "version" folder**
+
 ## Why should you should use this
 If you want to save yourself the trouble of:
 - Setting up Express Routers for an apt REST API.
@@ -13,7 +15,7 @@ If you want to save yourself the trouble of:
 You can use this library, for each resource you only need to:
 
 - Write a js file defining your controller via a ES6 class and four methods: get, post, patch and delete.
-- Put it in a "version" folder.
+- Put it in a "version"/resources folder.
 - Write schemas using yaml [joi-json](https://github.com/vandium-io/joi-json) based files, for each method and request/response.
 
 Having that, Iunctio will start with your resources ready to go, or said in another way...
@@ -34,23 +36,23 @@ First, install it on your base project:
 npm install iunctio
 ```
 
-Iunctio needs to know where to locate the resources, it has three ways to do so:
+Iunctio needs to know where to locate the iunctio_home, it has three ways to do so:
 
-- First argument on Iunctio command is a relative path from where it is run.
+- First argument on **iunctio** command is a relative path from where it is run.
 - Environment variable IUNCTIO_HOME is set to an absolute path
-- Fallbacks to a folder named "resources" in the working directory where Iunctio command is run
+- Fallbacks to a folder named "iunctio" in the working directory where **iunctio** command is run
 
 For example:
 
 ```bash
-# will look for resources at /mydir/arg/otherresources
-me@here:/mydir$ node ./node_modules/.bin/./iunctio ./arg/otherresources
+# will look for resources at /mydir/arg/otheriunctio
+me@here:/mydir$ node ./node_modules/.bin/./iunctio ./arg/otheriunctio
 
-# will look for resources at /anywhere/myresources
-me@here:/mydir$ export IUNCTIO_HOME=/anywhere/myresources
+# will look for resources at /anywhere/myiunctio
+me@here:/mydir$ export IUNCTIO_HOME=/anywhere/myiunctio
 me@here:/mydir$ node ./node_modules/.bin/./iunctio
 
-# will look for resources at /mydir/resources
+# will look for resources at /mydir/iunctio
 me@here:/mydir$ node ./node_modules/.bin/./iunctio
 ```
 
@@ -142,17 +144,6 @@ export IUNCTIO_RESOURCES=customer,account,contact
 
 Any other existing resources in the resources folder will be skipped in the resource loading stage, if a specified resource in *IUNCTIO_RESOURCES* doesn't exists in the resources folder there is no effect.
 
-## Utility folders in version folder
-You can intentionally instruct Iunctio to skip some folders in the resource loading stage, by prefixing them with underscore in their name, this can be used for a folder that you intend to keep also versioned within the API but is not a resource (ie: model, services, etc...).
-
-```bash
-resources
-|- v1
-  |- _services #<- Will be ignored
-  |- contact
-  |- customer
-```
-
 ## Extending the pre-setted Express Routers
 Iunctio lifecycle allows for additional setups to the main Express Router and for each version Express Router, providing an **iunctio-customization.js** file, which must export the *setupRouterBeforeApi* and *setupRouterAfterApi* functions, depending where you put this file (or multiple ones), they will affect the Express middleware order in different ways, to put it simply in a normal case, the order is:
 
@@ -197,11 +188,9 @@ dependencies:
 ```
 
 ## Provided Example
-In this repository the folder [libtest](libtest) contains a resources folder and a sample http GET request to test it, it can be run using `npm test` here.
+In this repository the folder [libtest](libtest) contains a iunctio folder and a sample http GET request to test it, it can be run using `npm run libtest-start` here.
 
 ## TO-DO
 
-- make it stoppable "gracefully"
-- allow a better api version structure
 - Refactoring Unit tests.
 - Anything else that may come up.

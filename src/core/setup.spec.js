@@ -269,7 +269,7 @@ describe('Setup', () => {
     }
   });
 
-  it('should setup (error on non-existing resources path folder)', () => {
+  it('should setup (error on non-existing iunctio path folder)', () => {
     let argvBk = process.argv;
     let mockFS = {
       existsSync: sinon.stub().returns(false),
@@ -308,7 +308,7 @@ describe('Setup', () => {
       expect(true,'expected thrown error').to.be.true;
     } catch (error) {
       process.argv = argvBk;
-      expect(error.message).to.contain(`Couldn't find the resources path folder`);
+      expect(error.message).to.contain(`Couldn't find the iunctio path folder`);
     }
   });
 

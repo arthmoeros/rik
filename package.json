@@ -1,10 +1,10 @@
 {
   "name": "iunctio",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "description": "Library for easy deployment of proxy microservices",
   "main": "index.js",
   "scripts": {
-    "libtest-start": "node ./src/core/main.js ./libtest/resources",
+    "libtest-start": "node ./src/core/main.js ./libtest/iunctio",
     "test": "_mocha \"./src/**/*.spec.js\"",
     "coverage": "nyc -x **/*.spec.js --reporter=lcov --reporter=cobertura --reporter=text-summary --reporter=html --cache npm test"
   },

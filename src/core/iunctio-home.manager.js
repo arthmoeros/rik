@@ -4,25 +4,26 @@ const jsYaml = require('js-yaml');
 const logger = require('../support/iunctio-logger');
 
 const REGEX_API_VERSION = /v[0-9]*/;
+const RESOURCES_FOLDER = 'resources';
 
 class IunctioHomeManager {
 
-  initialize(resourcesPath){
+  initialize(resourcesPath) {
     this.resourcesPath = resourcesPath;
   }
 
-  setSettings(settings){
+  setSettings(settings) {
     this.settings = settings;
   }
 
   getResourceConfig(version, name) {
-    let resourcePath = path.join(this.resourcesPath, version, name);
+    let resourcePath = path.join(this.resourcesPath, version, RESOURCES_FOLDER, name);
     let ResourceController = require(path.join(resourcePath, 'controller'));
     let resource = {
       resourceController: new ResourceController(),
       metadata: {}
     };
-    
+
     resource.metadata.name = name;
     resource.metadata.subOf = ResourceController.subOf
     let validationErrors = this._checkResourceControllerFunctions(resource);
@@ -33,9 +34,9 @@ class IunctioHomeManager {
     return resource;
   }
 
-  getHealthCheck(version, name){
-    let healthcheckYml = path.join(this.resourcesPath, version, name,'healthcheck.yml');
-    if(fs.existsSync(healthcheckYml)){
+  getHealthCheck(version, name) {
+    let healthcheckYml = path.join(this.resourcesPath, version, RESOURCES_FOLDER, name, 'healthcheck.yml');
+    if (fs.existsSync(healthcheckYml)) {
       return jsYaml.load(fs.readFileSync(healthcheckYml).toString());
     }
     return undefined;
@@ -87,39 +88,39 @@ class IunctioHomeManager {
     const versionsList = fs.readdirSync(this.resourcesPath);
     const resourcesObj = {};
     versionsList.forEach((versionDirName) => {
-      let versionDir = path.join(this.resourcesPath, versionDirName);
-      if (fs.lstatSync(versionDir).isDirectory()) {
-        if (REGEX_API_VERSION.test(versionDirName)) {
+      if (REGEX_API_VERSION.test(versionDirName)) {
+        let versionDirResources = path.join(this.resourcesPath, versionDirName, RESOURCES_FOLDER);
+        if (fs.lstatSync(versionDirResources).isDirectory()) {
           resourcesObj[versionDirName] = [];
-          let resourcesList = fs.readdirSync(versionDir);
+          let resourcesList = fs.readdirSync(versionDirResources);
           resourcesList.forEach((resourceDirName) => {
-            let resourceDir = path.join(versionDir, resourceDirName);
-            if (fs.lstatSync(resourceDir).isDirectory() && !resourceDirName.startsWith('_')) {
+            let resourceDir = path.join(versionDirResources, resourceDirName);
+            if (fs.lstatSync(resourceDir).isDirectory()) {
               if (fs.existsSync(path.join(resourceDir, 'controller.js'))) {
                 resourcesObj[versionDirName].push(resourceDirName);
               } else {
                 logger.warn(
-                  `Ignoring directory '${path.join(versionDirName, resourceDirName)}' found at resources path (it lacks a controller.js file)`,
+                  `Ignoring directory '${path.join(versionDirName, resourceDirName)}' found at resources folder (it lacks a controller.js file)`,
                   'HomeManager',
                   'GetAvailableResources'
                 );
               }
             }
           });
-        } else {
-          logger.warn(
-            `Ignoring directory '${versionDirName}' found at resources path (it doesn't have version format)`,
-            'HomeManager',
-            'GetAvailableResources'
-          );
         }
+      } else {
+        logger.warn(
+          `Ignoring directory '${versionDirName}' found at iunctio path (it doesn't have version format)`,
+          'HomeManager',
+          'GetAvailableResources'
+        );
       }
     });
     return resourcesObj;
   }
 
   getExpressCustomization(versionPath) {
-    if(versionPath === undefined){
+    if (versionPath === undefined) {
       versionPath = '';
     }
     let customizationPath = path.join(this.resourcesPath, versionPath, 'iunctio-customization');
@@ -129,7 +130,7 @@ class IunctioHomeManager {
     return undefined;
   }
 
-  getSettings(){
+  getSettings() {
     return this.settings;
   }
 

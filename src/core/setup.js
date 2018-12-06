@@ -13,18 +13,18 @@ function setup() {
       argumentIunctioHome = path.join(process.cwd(), argumentIunctioHome);
     }
   }
-  const RESOURCES_PATH = argumentIunctioHome || process.env.IUNCTIO_HOME || path.join(process.cwd(), 'resources')
+  const IUNCTIO_HOME = argumentIunctioHome || process.env.IUNCTIO_HOME || path.join(process.cwd(), 'iunctio')
 
-  if (!path.isAbsolute(RESOURCES_PATH)) {
+  if (!path.isAbsolute(IUNCTIO_HOME)) {
     throw new Error('IUNCTIO_HOME must be an absolute path');
   }
 
-  if (!fs.existsSync(RESOURCES_PATH)) {
-    throw new Error(`Couldn't find the resources path folder -> ${RESOURCES_PATH}`);
+  if (!fs.existsSync(IUNCTIO_HOME)) {
+    throw new Error(`Couldn't find the iunctio path folder -> ${IUNCTIO_HOME}`);
   }
 
-  // Set RESOURCES_PATH to home manager to be able to use it
-  iunctioHomeManager.initialize(RESOURCES_PATH);
+  // Set IUNCTIO_HOME to home manager to be able to use it
+  iunctioHomeManager.initialize(IUNCTIO_HOME);
 
   // Logger is first set here
   let iunctioCustomization = iunctioHomeManager.getExpressCustomization();
@@ -33,15 +33,15 @@ function setup() {
   }
 
   logger.info(
-    `Using resources from ${RESOURCES_PATH}`,
+    `Using resources from ${IUNCTIO_HOME}`,
     'Setup',
     'LocatedResourcesPathFolder'
   );
 
-  let settingsFilePath = path.join(RESOURCES_PATH, 'settings.yml');
+  let settingsFilePath = path.join(IUNCTIO_HOME, 'settings.yml');
   let settings;
   if (fs.existsSync(settingsFilePath)) {
-    settings = jsYaml.load(fs.readFileSync(path.join(RESOURCES_PATH, 'settings.yml')));
+    settings = jsYaml.load(fs.readFileSync(path.join(IUNCTIO_HOME, 'settings.yml')));
     let settingsSchema = schemaValidation.resolveSchema(path.join(__dirname, '../support/schemas/settings.schema.yml'));
     let errors = schemaValidation.validate(settingsSchema, settings);
     if (errors && errors.error) {

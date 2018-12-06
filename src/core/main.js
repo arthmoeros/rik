@@ -65,12 +65,15 @@ function main(){
     }
   
     app.use('/api', apiRouter);
-    app.listen(port);
+    let server = app.listen(port);
     logger.info(
       `Iunctio instance is listening on port ${port}`,
       'Main',
       'IunctioStarted'
     );
+    process.on('SIGINT', closeServerCallback(server, 'SIGINT'));
+    process.on('SIGKILL', closeServerCallback(server, 'SIGKILL'));
+    process.on('SIGTERM', closeServerCallback(server, 'SIGTERM'));
   } catch (error) {
     logger.error(
       'Unhandled Error',
@@ -79,6 +82,17 @@ function main(){
       error
     );
     throw error;
+  }
+}
+
+function closeServerCallback(server, signal){
+  return () => {
+    server.close();
+    logger.info(
+      `${signal} received, stopped Iunctio instance`,
+      'Main',
+      'closeServerCallback'
+    );
   }
 }
 

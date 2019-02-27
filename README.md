@@ -1,9 +1,7 @@
-# RIK
-A framework for easy development of REST APIs using an Express definition layer.
+# Resource Interface Kit for express.js
+A framework for easy development of REST APIs using a descriptive folder structure with express.js.
 
 ***Requires native Async/Await support, Node 8 or later is recommended***
-
-**WARNING!, breaking changes in 1.1, resources now must be put inside a "resources" folder inside the "version" folder**
 
 ## Why should you should use this
 If you want to save yourself the trouble of:

@@ -249,7 +249,7 @@ describe('Main', () => {
     require('./main');
     process.on = bkProcessOn;
 
-    expect(mockServer.close.calledThrice).to.be.true;
+    expect(mockServer.close.called).to.be.true;
   });
 
 });

@@ -1,9 +1,9 @@
 const express = require('express');
 const CommonBuilder = require('./common-builder');
-const logger = require('../../support/iunctio-logger');
-const iunctioHomeManager = require('./../iunctio-home.manager');
+const logger = require('../../support/rik-logger');
+const rikHomeManager = require('./../rik-home.manager');
 
-const iunctioSettings = iunctioHomeManager.getSettings();
+const rikSettings = rikHomeManager.getSettings();
 
 class HeaderVersionBuilder {
 
@@ -49,13 +49,13 @@ class HeaderVersionBuilder {
     let lastVersion = versionList[versionList.length - 1];
 
     apiRouter.use('', (req, res, next) => {
-      let headerVersionName = iunctioSettings.apiVersion.headerName || 'version';
-      let defaultVersion = iunctioSettings.apiVersion.headerDefaultVersion || lastVersion;
+      let headerVersionName = rikSettings.apiVersion.headerName || 'version';
+      let defaultVersion = rikSettings.apiVersion.headerDefaultVersion || lastVersion;
       let selectedVersion;
       if (req.headers[headerVersionName]) {
         selectedVersion = req.headers[headerVersionName];
       } else {
-        if (iunctioSettings.apiVersion.enforceVersionHeader) {
+        if (rikSettings.apiVersion.enforceVersionHeader) {
           res.status(400);
           res.send(`Version header is required: "${headerVersionName}"`);
           return;

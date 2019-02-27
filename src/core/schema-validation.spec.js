@@ -11,7 +11,7 @@ describe('SchemaValidation', () => {
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../support/iunctio-logger', {
+    mockery.registerMock('../support/rik-logger', {
       info: () => { },
       warn: () => { },
       error: () => { },
@@ -23,7 +23,7 @@ describe('SchemaValidation', () => {
     mockery.disable();
   });
 
-  it('should resolveIunctioSchema', () => {
+  it('should resolveRIKSchema', () => {
     let mockJoiYml = {
       getBuilt: sinon.stub().returns({})
     };
@@ -39,12 +39,12 @@ describe('SchemaValidation', () => {
         }
       }
     }
-    let schema = validator.resolveIunctioSchema(mockResource,'get','req');
+    let schema = validator.resolveRIKSchema(mockResource,'get','req');
 
     expect(schema).to.not.be.undefined;
   });
 
-  it('should resolveIunctioSchema (undefined schema requested)', () => {
+  it('should resolveRIKSchema (undefined schema requested)', () => {
     let mockJoiYml = {
       getBuilt: sinon.stub().returns({})
     };
@@ -60,14 +60,14 @@ describe('SchemaValidation', () => {
       }
     }
     try {
-      validator.resolveIunctioSchema(mockResource,'get','req');
+      validator.resolveRIKSchema(mockResource,'get','req');
       expect(true,'expected thrown error').to.be.false;
     } catch (error) {
       expect(error.message).to.be.eq('Schema type req for handler get is undefined!');
     }
   });
 
-  it('should validateIunctioObject', () => {
+  it('should validateRIKObject', () => {
     let mockJoi = {
       validate: sinon.stub().returns({})
     };
@@ -76,13 +76,13 @@ describe('SchemaValidation', () => {
     
     const SchemaValidation = require('./schema-validation');
     const validator = new SchemaValidation();
-    let validationError = validator.validateIunctioObject({},{},'post',true);
+    let validationError = validator.validateRIKObject({},{},'post',true);
 
     expect(validationError).to.not.be.undefined;
     expect(mockJoi.validate.called).to.be.true;
   });
 
-  it('should validateIunctioObject (get request)', () => {
+  it('should validateRIKObject (get request)', () => {
     let mockJoi = {
       validate: sinon.stub().returns({})
     };
@@ -91,7 +91,7 @@ describe('SchemaValidation', () => {
     
     const SchemaValidation = require('./schema-validation');
     const validator = new SchemaValidation();
-    let validationError = validator.validateIunctioObject({},{},'get',true);
+    let validationError = validator.validateRIKObject({},{},'get',true);
 
     expect(validationError).to.not.be.undefined;
     expect(mockJoi.validate.called).to.be.true;

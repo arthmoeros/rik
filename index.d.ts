@@ -1,14 +1,14 @@
 import { Router } from "express";
 
-declare namespace iunctio{
-    class IunctioHomeManager {
+declare namespace rik{
+    class RIKHomeManager {
         public initialize(resourcesPath: string): void;
         public getResourceConfig(version: string, name: string): ResourceConfig;
         public getHealthCheck(version, name): HealthCheck;
         public getAvailableResources(): any;
         public getExpressCustomization(versionPath?: string): ExpressCustomization;
-        public getSettings(): IunctioSettings;
-        public setSettings(settings: IunctioSettings): void;
+        public getSettings(): RIKSettings;
+        public setSettings(settings: RIKSettings): void;
     }
 
     class HealthCheck {
@@ -22,7 +22,7 @@ declare namespace iunctio{
         public expectedStatusCode: number;
     }
 
-    class IunctioSettings {
+    class RIKSettings {
         public apiVersion: ApiVersion;
         public cors: Cors;
     }
@@ -45,12 +45,12 @@ declare namespace iunctio{
     }
 
     class CustomLogger {
-        public info(iunctioMessage: IunctioMessage): void;
-        public warn(iunctioMessage: IunctioMessage): void;
-        public error(iunctioMessage: IunctioMessage): void;
+        public info(rikMessage: RIKMessage): void;
+        public warn(rikMessage: RIKMessage): void;
+        public error(rikMessage: RIKMessage): void;
     }
 
-    class IunctioMessage {
+    class RIKMessage {
         public message: string;
         public component: string;
         public stage: string;
@@ -94,4 +94,4 @@ declare namespace iunctio{
         
 }
 
-export = new iunctio.IunctioHomeManager();
+export = new rik.RIKHomeManager();

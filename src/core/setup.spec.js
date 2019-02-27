@@ -6,13 +6,13 @@ const sinon = require('sinon');
 describe('Setup', () => {
 
   beforeEach(() => {
-    delete process.env.IUNCTIO_HOME;
+    delete process.env.RIK_HOME;
     mockery.enable({
       warnOnReplace: false,
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../support/iunctio-logger', {
+    mockery.registerMock('../support/rik-logger', {
       info: () => { },
       warn: () => { },
       error: () => { },
@@ -53,7 +53,7 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     process.argv = [];
     let setup = require('./setup');
@@ -92,7 +92,7 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     process.argv = [null, null, 'myresources'];
     let setup = require('./setup');
@@ -131,7 +131,7 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     process.argv = [null, null, '/myresources'];
     let setup = require('./setup');
@@ -170,7 +170,7 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     try {
       process.argv = [null, null, '/myresources'];
@@ -180,7 +180,7 @@ describe('Setup', () => {
       expect(true,'expected thrown error').to.be.true;
     } catch (error) {
       process.argv = argvBk;
-      expect(error.message).to.contain('Invalid Iunctio settings file at');
+      expect(error.message).to.contain('Invalid RIK settings file at');
     }
   });
 
@@ -212,7 +212,7 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     try {
       process.argv = [null, null, '/myresources'];
@@ -222,11 +222,11 @@ describe('Setup', () => {
       expect(true,'expected thrown error').to.be.true;
     } catch (error) {
       process.argv = argvBk;
-      expect(error.message).to.contain('Invalid Iunctio settings file at');
+      expect(error.message).to.contain('Invalid RIK settings file at');
     }
   });
 
-  it('should setup (error on non-absolute path in IUNCTIO_HOME)', () => {
+  it('should setup (error on non-absolute path in RIK_HOME)', () => {
     let argvBk = process.argv;
     let mockFS = {
       existsSync: sinon.stub().returns(true),
@@ -254,22 +254,22 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     try {
       process.argv = [];
-      process.env.IUNCTIO_HOME = 'notAbsolute';
+      process.env.RIK_HOME = 'notAbsolute';
       let setup = require('./setup');
       setup();
       process.argv = argvBk;
       expect(true,'expected thrown error').to.be.true;
     } catch (error) {
       process.argv = argvBk;
-      expect(error.message).to.contain('IUNCTIO_HOME must be an absolute path');
+      expect(error.message).to.contain('RIK_HOME must be an absolute path');
     }
   });
 
-  it('should setup (error on non-existing iunctio path folder)', () => {
+  it('should setup (error on non-existing rik path folder)', () => {
     let argvBk = process.argv;
     let mockFS = {
       existsSync: sinon.stub().returns(false),
@@ -297,18 +297,18 @@ describe('Setup', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     mockery.registerMock('./schema-validation', mockSchemaValidation);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
 
     try {
       process.argv = [];
-      process.env.IUNCTIO_HOME = '/absolute';
+      process.env.RIK_HOME = '/absolute';
       let setup = require('./setup');
       setup();
       process.argv = argvBk;
       expect(true,'expected thrown error').to.be.true;
     } catch (error) {
       process.argv = argvBk;
-      expect(error.message).to.contain(`Couldn't find the iunctio path folder`);
+      expect(error.message).to.contain(`Couldn't find the rik path folder`);
     }
   });
 

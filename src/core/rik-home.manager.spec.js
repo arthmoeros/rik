@@ -4,7 +4,7 @@ const expect = chai.expect;
 const sinon = require('sinon');
 const path = require('path');
 
-describe('IunctioHomeManager', () => {
+describe('RIKHomeManager', () => {
 
   beforeEach(() => {
     mockery.enable({
@@ -12,7 +12,7 @@ describe('IunctioHomeManager', () => {
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../support/iunctio-logger', {
+    mockery.registerMock('../support/rik-logger', {
       info: () => { },
       warn: () => { },
       error: () => { },
@@ -26,7 +26,7 @@ describe('IunctioHomeManager', () => {
 
   it('should setSettings and getSettings', () => {
 
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.setSettings('mock settings');
 
     expect(homeManager.getSettings()).to.be.eq('mock settings', 'expected getSetting to return "mock settings"');
@@ -34,7 +34,7 @@ describe('IunctioHomeManager', () => {
 
   it('should getResourceConfig', () => {
 
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
 
     class MockResourceController {
@@ -53,7 +53,7 @@ describe('IunctioHomeManager', () => {
 
   it('should getResourceConfig (< 4args method error)', () => {
 
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
 
     class MockResourceController {
@@ -73,7 +73,7 @@ describe('IunctioHomeManager', () => {
 
   it('should getResourceConfig (not async method)', () => {
 
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
 
     class MockResourceController {
@@ -104,7 +104,7 @@ describe('IunctioHomeManager', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let hc = homeManager.getHealthCheck('v1', 'resources', 'dummy');
 
@@ -126,7 +126,7 @@ describe('IunctioHomeManager', () => {
     mockery.registerMock('fs', mockFS);
     mockery.registerMock('js-yaml', mockJsYaml);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let hc = homeManager.getHealthCheck('v1', 'resources', 'dummy');
 
@@ -146,7 +146,7 @@ describe('IunctioHomeManager', () => {
 
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let resources = homeManager.getAvailableResources();
 
@@ -165,7 +165,7 @@ describe('IunctioHomeManager', () => {
 
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let resources = homeManager.getAvailableResources();
 
@@ -184,7 +184,7 @@ describe('IunctioHomeManager', () => {
 
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let resources = homeManager.getAvailableResources();
 
@@ -203,7 +203,7 @@ describe('IunctioHomeManager', () => {
 
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let resources = homeManager.getAvailableResources();
 
@@ -222,7 +222,7 @@ describe('IunctioHomeManager', () => {
 
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let resources = homeManager.getAvailableResources();
 
@@ -235,10 +235,10 @@ describe('IunctioHomeManager', () => {
       existsSync: sinon.stub().returns(true)
     };
 
-    mockery.registerMock(path.join('.','v1','iunctio-customization'), {});
+    mockery.registerMock(path.join('.','v1','rik-customization'), {});
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let customization = homeManager.getExpressCustomization('v1');
 
@@ -250,10 +250,10 @@ describe('IunctioHomeManager', () => {
       existsSync: sinon.stub().returns(true)
     };
 
-    mockery.registerMock(path.join('.','','iunctio-customization'), {});
+    mockery.registerMock(path.join('.','','rik-customization'), {});
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let customization = homeManager.getExpressCustomization();
 
@@ -265,10 +265,10 @@ describe('IunctioHomeManager', () => {
       existsSync: sinon.stub().returns(false)
     };
 
-    mockery.registerMock(path.join('.','','iunctio-customization'), {});
+    mockery.registerMock(path.join('.','','rik-customization'), {});
     mockery.registerMock('fs', mockFS);
     
-    const homeManager = require('./iunctio-home.manager');
+    const homeManager = require('./rik-home.manager');
     homeManager.initialize('.');
     let customization = homeManager.getExpressCustomization();
 

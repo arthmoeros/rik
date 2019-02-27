@@ -1,13 +1,13 @@
 const express = require('express');
 const serializeError = require('serialize-error');
-const iunctioHealth = require('iunctio-health');
-const logger = require('../../support/iunctio-logger');
+const rikHealth = require('rik-health');
+const logger = require('../../support/rik-logger');
 const SchemaValidation = require('./../schema-validation');
-const iunctioHomeManager = require('../iunctio-home.manager');
+const rikHomeManager = require('../rik-home.manager');
 
-const debugMode = process.env.IUNCTIO_DEBUG || false;
-const selectedResources = process.env.IUNCTIO_RESOURCES ? process.env.IUNCTIO_RESOURCES.split(',') : undefined;
-const iunctioSettings = iunctioHomeManager.getSettings();
+const debugMode = process.env.RIK_DEBUG || false;
+const selectedResources = process.env.RIK_RESOURCES ? process.env.RIK_RESOURCES.split(',') : undefined;
+const rikSettings = rikHomeManager.getSettings();
 
 class CommonBuilder {
 
@@ -26,9 +26,9 @@ class CommonBuilder {
       if (this._checkSelectiveResourceLoading(resourceName)) {
         return;
       }
-      let healthCheck = iunctioHomeManager.getHealthCheck(version, resourceName);
+      let healthCheck = rikHomeManager.getHealthCheck(version, resourceName);
       if (healthCheck) {
-        iunctioHealth(router, resourceName, healthCheck, logger);
+        rikHealth(router, resourceName, healthCheck, logger);
       }
     });
   }
@@ -43,14 +43,14 @@ class CommonBuilder {
   setupResourcesRoutes(version, versionRouter, resources) {
     this._setCorsHandler(versionRouter);
 
-    let iunctioCustomization = iunctioHomeManager.getExpressCustomization(version);
-    if (iunctioCustomization) {
-      if (iunctioCustomization.setupRouterBeforeApi
-        && typeof (iunctioCustomization.setupRouterBeforeApi) === 'function') {
-        iunctioCustomization.setupRouterBeforeApi(versionRouter);
+    let rikCustomization = rikHomeManager.getExpressCustomization(version);
+    if (rikCustomization) {
+      if (rikCustomization.setupRouterBeforeApi
+        && typeof (rikCustomization.setupRouterBeforeApi) === 'function') {
+        rikCustomization.setupRouterBeforeApi(versionRouter);
       } else {
         logger.warn(
-          `Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterBeforeApi function`,
+          `Found a RIK customization file for ${version}, but it doesn't export the setupRouterBeforeApi function`,
           `SetupResourcesRoutes#${version}`,
           'SetupVersionRouterBeforeApi'
         );
@@ -61,7 +61,7 @@ class CommonBuilder {
       if (this._checkSelectiveResourceLoading(resourceName)) {
         return;
       }
-      let resource = iunctioHomeManager.getResourceConfig(version, resourceName);
+      let resource = rikHomeManager.getResourceConfig(version, resourceName);
       let createdMethods = this._setResourceVerbsHandlers(versionRouter, resource, resources);
       logger.info(
         `Resource created - API Version: ${version}, Name: ${resource.metadata.name}, Methods: ${createdMethods}`,
@@ -70,13 +70,13 @@ class CommonBuilder {
       );
     });
 
-    if (iunctioCustomization) {
-      if (iunctioCustomization.setupRouterAfterApi
-        && typeof (iunctioCustomization.setupRouterAfterApi) === 'function') {
-        iunctioCustomization.setupRouterAfterApi(versionRouter);
+    if (rikCustomization) {
+      if (rikCustomization.setupRouterAfterApi
+        && typeof (rikCustomization.setupRouterAfterApi) === 'function') {
+        rikCustomization.setupRouterAfterApi(versionRouter);
       } else {
         logger.warn(
-          `Found a Iunctio customization file for ${version}, but it doesn't export the setupRouterAfterApi function`,
+          `Found a RIK customization file for ${version}, but it doesn't export the setupRouterAfterApi function`,
           `SetupResourcesRoutes#${version}`,
           'SetupVersionRouterAfterApi'
         );
@@ -86,7 +86,7 @@ class CommonBuilder {
 
   _setCorsHandler(router) {
     router.options('/*', (req, res, next) => {
-      res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
+      res.setHeader('Access-Control-Allow-Headers', rikSettings.cors.allowedHeaders);
       res.setHeader('Access-Control-Allow-Methods', ['HEAD', 'GET', 'POST', 'PATCH', 'DELETE', 'PUT']);
       res.setHeader('Access-Control-Allow-Origin', '*');
       res.send();
@@ -94,10 +94,10 @@ class CommonBuilder {
   }
 
   _createHandler(resource, handlerType) {
-    let reqSchema = this.schemaValidation.resolveIunctioSchema(resource, handlerType, 'Request');
-    let resSchema = this.schemaValidation.resolveIunctioSchema(resource, handlerType, 'Response');
+    let reqSchema = this.schemaValidation.resolveRIKSchema(resource, handlerType, 'Request');
+    let resSchema = this.schemaValidation.resolveRIKSchema(resource, handlerType, 'Response');
     let handler = (req, res, next) => {
-      let reqValErrors = this.schemaValidation.validateIunctioObject(reqSchema, req, handlerType, true);
+      let reqValErrors = this.schemaValidation.validateRIKObject(reqSchema, req, handlerType, true);
       if (reqValErrors && reqValErrors.error) {
         res.status(400);
         res.send(`Sent request failed schema validation, details -> ${JSON.stringify(reqValErrors)}`);
@@ -105,7 +105,7 @@ class CommonBuilder {
         return;
       }
       resource.resourceController[handlerType](req.params, req.query, req.headers, req.body).then((apiResponse) => {
-        res.setHeader('Access-Control-Allow-Headers', iunctioSettings.cors.allowedHeaders);
+        res.setHeader('Access-Control-Allow-Headers', rikSettings.cors.allowedHeaders);
         res.setHeader('Access-Control-Allow-Methods', ['HEAD', 'GET', 'POST', 'PATCH', 'DELETE', 'PUT']);
         res.setHeader('Access-Control-Allow-Origin', '*');
         if (apiResponse.statusCode
@@ -116,7 +116,7 @@ class CommonBuilder {
           next();
           return;
         }
-        let respValErrors = this.schemaValidation.validateIunctioObject(resSchema, apiResponse, handlerType, false);
+        let respValErrors = this.schemaValidation.validateRIKObject(resSchema, apiResponse, handlerType, false);
         if (respValErrors && respValErrors.error) {
           res.status(500);
           res.send(`Response created by service failed schema validation, details -> ${JSON.stringify(respValErrors)}`);

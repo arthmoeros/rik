@@ -1,6 +1,6 @@
 const serializeError = require('serialize-error');
 
-class IunctioLogger {
+class RIKLogger {
 
   static getInstance(){
     return LOGGER_INSTANCE;
@@ -50,6 +50,6 @@ class IunctioLogger {
 
 }
 
-const LOGGER_INSTANCE = new IunctioLogger();
+const LOGGER_INSTANCE = new RIKLogger();
 
-module.exports = IunctioLogger.getInstance();
+module.exports = RIKLogger.getInstance();

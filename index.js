@@ -1,1 +1,1 @@
-module.exports.IunctioResponse = require('./src/support/iunctio-response');
+module.exports.RIKResponse = require('./src/support/rik-response');

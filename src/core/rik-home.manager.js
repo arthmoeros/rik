@@ -1,12 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const jsYaml = require('js-yaml');
-const logger = require('../support/iunctio-logger');
+const logger = require('../support/rik-logger');
 
 const REGEX_API_VERSION = /v[0-9]*/;
 const RESOURCES_FOLDER = 'resources';
 
-class IunctioHomeManager {
+class RIKHomeManager {
 
   initialize(resourcesPath) {
     this.resourcesPath = resourcesPath;
@@ -110,7 +110,7 @@ class IunctioHomeManager {
         }
       } else {
         logger.warn(
-          `Ignoring directory '${versionDirName}' found at iunctio path (it doesn't have version format)`,
+          `Ignoring directory '${versionDirName}' found at rik path (it doesn't have version format)`,
           'HomeManager',
           'GetAvailableResources'
         );
@@ -123,7 +123,7 @@ class IunctioHomeManager {
     if (versionPath === undefined) {
       versionPath = '';
     }
-    let customizationPath = path.join(this.resourcesPath, versionPath, 'iunctio-customization');
+    let customizationPath = path.join(this.resourcesPath, versionPath, 'rik-customization');
     if (fs.existsSync(`${customizationPath}.js`)) {
       return require(customizationPath);
     }
@@ -136,4 +136,4 @@ class IunctioHomeManager {
 
 }
 
-module.exports = new IunctioHomeManager();
+module.exports = new RIKHomeManager();

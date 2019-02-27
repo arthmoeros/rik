@@ -3,7 +3,7 @@ const chai = require('chai');
 const expect = chai.expect;
 const sinon = require('sinon');
 
-describe('IunctioLogger', () => {
+describe('RIKLogger', () => {
 
   beforeEach(() => {
     mockery.enable({
@@ -22,7 +22,7 @@ describe('IunctioLogger', () => {
     let consoleLogBk = console.log;
     let consoleLogMock = sinon.stub();
     
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     logger.setCustomLogger(undefined);
     
     console.log = consoleLogMock;
@@ -33,7 +33,7 @@ describe('IunctioLogger', () => {
   });
 
   it('should log info into customLogger set', () => {
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     let customLogger = {
       info: sinon.stub(),
       warn: sinon.stub(),
@@ -50,7 +50,7 @@ describe('IunctioLogger', () => {
     let consoleLogBk = console.log;
     let consoleLogMock = sinon.stub();
     
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     logger.setCustomLogger(undefined);
     
     console.log = consoleLogMock;
@@ -65,7 +65,7 @@ describe('IunctioLogger', () => {
     let mockSerializeError = sinon.stub();
     mockery.registerMock('serialize-error', mockSerializeError);
     
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     let customLogger = {
       info: sinon.stub(),
       warn: sinon.stub(),
@@ -84,7 +84,7 @@ describe('IunctioLogger', () => {
     let consoleLogBk = console.log;
     let consoleLogMock = sinon.stub();
     
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     logger.setCustomLogger(undefined);
     
     console.log = consoleLogMock;
@@ -99,7 +99,7 @@ describe('IunctioLogger', () => {
     let mockSerializeError = sinon.stub();
     mockery.registerMock('serialize-error', mockSerializeError);
     
-    const logger = require('./iunctio-logger');
+    const logger = require('./rik-logger');
     let customLogger = {
       info: sinon.stub(),
       warn: sinon.stub(),

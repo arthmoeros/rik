@@ -11,7 +11,7 @@ describe('Main', () => {
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../support/iunctio-logger', {
+    mockery.registerMock('../support/rik-logger', {
       info: () => { },
       warn: () => { },
       error: () => { },
@@ -56,7 +56,7 @@ describe('Main', () => {
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
     mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
     mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
@@ -103,7 +103,7 @@ describe('Main', () => {
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
     mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
     mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
@@ -145,7 +145,7 @@ describe('Main', () => {
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
     mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
     mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
@@ -187,7 +187,7 @@ describe('Main', () => {
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
     mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
     mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 
@@ -238,7 +238,7 @@ describe('Main', () => {
     mockery.registerMock('./setup', mockSetup);
     mockery.registerMock('express', mockExpress);
     mockery.registerMock('body-parser', mockBodyParser);
-    mockery.registerMock('./iunctio-home.manager', mockHomeManager);
+    mockery.registerMock('./rik-home.manager', mockHomeManager);
     mockery.registerMock('./api-builders/path-version-builder', mockApiBuilderClass);
     mockery.registerMock('./api-builders/header-version-builder', mockApiBuilderClass);
 

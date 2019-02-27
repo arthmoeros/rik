@@ -3,7 +3,7 @@ const joiYml = require('joi-yml');
 
 class SchemaValidation {
 
-  resolveIunctioSchema(resource, handlerType, schemaType) {
+  resolveRIKSchema(resource, handlerType, schemaType) {
     let schemaFileName = resource.metadata.schemas[`${handlerType}${schemaType}`];
     if (schemaFileName) {
       return this.resolveSchema(schemaFileName);
@@ -16,7 +16,7 @@ class SchemaValidation {
     return joiYml.getBuilt(schemaFileName);
   }
   
-  validateIunctioObject(schema, obj, handlerType, isRequest) {
+  validateRIKObject(schema, obj, handlerType, isRequest) {
     if (handlerType === 'get' && isRequest) {
       return this.validate(schema, obj.query);
     } else {

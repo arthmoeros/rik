@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-const logger = require('../support/iunctio-logger');
+const logger = require('../support/rik-logger');
 const express = require('express');
 const setup = require('./setup');
 const bodyParser = require('body-parser');
@@ -7,12 +7,12 @@ const bodyParser = require('body-parser');
 function main(){
   try {
     setup();
-    const iunctioHomeManager = require('./iunctio-home.manager');
+    const rikHomeManager = require('./rik-home.manager');
     const app = express();
   
-    let iunctioCustomization = iunctioHomeManager.getExpressCustomization();
-    if (iunctioCustomization && iunctioCustomization.getCustomLogger) {
-      logger.setCustomLogger(iunctioCustomization.getCustomLogger());
+    let rikCustomization = rikHomeManager.getExpressCustomization();
+    if (rikCustomization && rikCustomization.getCustomLogger) {
+      logger.setCustomLogger(rikCustomization.getCustomLogger());
     }
   
     app.use(bodyParser.urlencoded({ extended: true }));
@@ -21,28 +21,28 @@ function main(){
     let port = process.env.PORT || 58080;
   
     let apiRouter = express.Router();
-    let iunctioSettings = iunctioHomeManager.getSettings();
-    let resourcesObj = iunctioHomeManager.getAvailableResources();
+    let rikSettings = rikHomeManager.getSettings();
+    let resourcesObj = rikHomeManager.getAvailableResources();
     
     let ApiBuilderType;
-    if (iunctioSettings.apiVersion.mode === 'path') {
+    if (rikSettings.apiVersion.mode === 'path') {
       ApiBuilderType = require('./api-builders/path-version-builder');
-    } else if (iunctioSettings.apiVersion.mode === 'header') {
+    } else if (rikSettings.apiVersion.mode === 'header') {
       ApiBuilderType = require('./api-builders/header-version-builder');
     } else {
-      throw new Error(`Unsupported apiVersion mode: ${iunctioSettings.apiVersion.mode}`);
+      throw new Error(`Unsupported apiVersion mode: ${rikSettings.apiVersion.mode}`);
     }
     
     let apiBuilder = new ApiBuilderType();
     apiBuilder.buildHealthChecks(apiRouter, resourcesObj);
   
-    if (iunctioCustomization) {
-      if (iunctioCustomization.setupRouterBeforeApi
-        && typeof (iunctioCustomization.setupRouterBeforeApi) === 'function') {
-        iunctioCustomization.setupRouterBeforeApi(apiRouter);
+    if (rikCustomization) {
+      if (rikCustomization.setupRouterBeforeApi
+        && typeof (rikCustomization.setupRouterBeforeApi) === 'function') {
+        rikCustomization.setupRouterBeforeApi(apiRouter);
       } else {
         logger.warn(
-          `Found a global Iunctio customization file, but it doesn't export the setupRouterBeforeApi function`,
+          `Found a global RIK customization file, but it doesn't export the setupRouterBeforeApi function`,
           'Main',
           'SetupMainRouterBeforeApi'
         );
@@ -51,13 +51,13 @@ function main(){
   
     apiBuilder.buildApi(apiRouter, resourcesObj);
   
-    if (iunctioCustomization) {
-      if (iunctioCustomization.setupRouterAfterApi
-        && typeof (iunctioCustomization.setupRouterAfterApi) === 'function') {
-        iunctioCustomization.setupRouterAfterApi(apiRouter);
+    if (rikCustomization) {
+      if (rikCustomization.setupRouterAfterApi
+        && typeof (rikCustomization.setupRouterAfterApi) === 'function') {
+        rikCustomization.setupRouterAfterApi(apiRouter);
       } else {
         logger.warn(
-          `Found a global Iunctio customization file, but it doesn't export the setupRouterAfterApi function`,
+          `Found a global RIK customization file, but it doesn't export the setupRouterAfterApi function`,
           'Main',
           'SetupMainRouterAfterApi'
         );
@@ -67,9 +67,9 @@ function main(){
     app.use('/api', apiRouter);
     let server = app.listen(port);
     logger.info(
-      `Iunctio instance is listening on port ${port}`,
+      `RIK instance is listening on port ${port}`,
       'Main',
-      'IunctioStarted'
+      'RIKStarted'
     );
     process.on('SIGINT', closeServerCallback(server, 'SIGINT'));
     process.on('SIGTERM', closeServerCallback(server, 'SIGTERM'));
@@ -88,7 +88,7 @@ function closeServerCallback(server, signal){
   return () => {
     server.close();
     logger.info(
-      `${signal} received, stopped Iunctio instance`,
+      `${signal} received, stopped RIK instance`,
       'Main',
       'closeServerCallback'
     );

@@ -13,7 +13,7 @@ describe('CommonBuilder', () => {
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../../support/iunctio-logger', {
+    mockery.registerMock('../../support/rik-logger', {
       info: () => { },
       warn: () => { },
       error: () => { },
@@ -26,17 +26,17 @@ describe('CommonBuilder', () => {
   });
 
   it('Should successfully setupHealthCheckRoutes, set healthcheck, without selectedResources', () => {
-    delete process.env.IUNCTIO_RESOURCES;
+    delete process.env.RIK_RESOURCES;
     class SchemaValidationMock { };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getHealthCheck: () => ({}),
       getSettings: sinon.spy()
     };
-    sinon.spy(iunctioHomeManagerMock, 'getHealthCheck');
-    let iunctioHealthMock = sinon.spy();
+    sinon.spy(rikHomeManagerMock, 'getHealthCheck');
+    let rikHealthMock = sinon.spy();
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
-    mockery.registerMock('iunctio-health', iunctioHealthMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
+    mockery.registerMock('rik-health', rikHealthMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -46,22 +46,22 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     builder.setupHealthCheckRoutes('v1', router, resources);
 
-    expect(iunctioHomeManagerMock.getHealthCheck.called, 'Expect iunctioHomeManagerMock.getHealthCheck to be called').to.be.true;
-    expect(iunctioHealthMock.called, 'Expect iunctioHealthMock to be called').to.be.true;
+    expect(rikHomeManagerMock.getHealthCheck.called, 'Expect rikHomeManagerMock.getHealthCheck to be called').to.be.true;
+    expect(rikHealthMock.called, 'Expect rikHealthMock to be called').to.be.true;
   });
 
   it('Should successfully setupHealthCheckRoutes, unset healthcheck, without selectedResources', () => {
-    delete process.env.IUNCTIO_RESOURCES;
+    delete process.env.RIK_RESOURCES;
     class SchemaValidationMock { };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getHealthCheck: () => undefined,
       getSettings: sinon.spy()
     };
-    sinon.spy(iunctioHomeManagerMock, 'getHealthCheck');
-    let iunctioHealthMock = sinon.spy();
+    sinon.spy(rikHomeManagerMock, 'getHealthCheck');
+    let rikHealthMock = sinon.spy();
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
-    mockery.registerMock('iunctio-health', iunctioHealthMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
+    mockery.registerMock('rik-health', rikHealthMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -71,23 +71,23 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     builder.setupHealthCheckRoutes('v1', router, resources);
 
-    expect(iunctioHomeManagerMock.getHealthCheck.called, 'Expect iunctioHomeManagerMock.getHealthCheck to be called').to.be.true;
-    expect(iunctioHealthMock.notCalled, 'Expect iunctioHealthMock to not be called').to.be.true;
+    expect(rikHomeManagerMock.getHealthCheck.called, 'Expect rikHomeManagerMock.getHealthCheck to be called').to.be.true;
+    expect(rikHealthMock.notCalled, 'Expect rikHealthMock to not be called').to.be.true;
   });
 
   it('Should successfully setupHealthCheckRoutes, unset healthcheck, with selectedResources', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     class SchemaValidationMock { };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getHealthCheck: () => undefined,
       getSettings: sinon.spy()
     };
-    sinon.spy(iunctioHomeManagerMock, 'getHealthCheck');
-    let iunctioHealthMock = sinon.spy();
+    sinon.spy(rikHomeManagerMock, 'getHealthCheck');
+    let rikHealthMock = sinon.spy();
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
-    mockery.registerMock('iunctio-health', iunctioHealthMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
+    mockery.registerMock('rik-health', rikHealthMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -97,14 +97,14 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     builder.setupHealthCheckRoutes('v1', router, resources);
 
-    expect(iunctioHomeManagerMock.getHealthCheck.called, 'Expect iunctioHomeManagerMock.getHealthCheck to be called').to.be.true;
-    expect(iunctioHealthMock.notCalled, 'Expect iunctioHealthMock to not be called').to.be.true;
+    expect(rikHomeManagerMock.getHealthCheck.called, 'Expect rikHomeManagerMock.getHealthCheck to be called').to.be.true;
+    expect(rikHealthMock.notCalled, 'Expect rikHealthMock to not be called').to.be.true;
   });
 
-  it('Should successfully setupResourcesRoutes, with iunctio customization(before and after), with selectedResources, all verbs set', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
-    let iunctioCustomizationMock = {
+  it('Should successfully setupResourcesRoutes, with rik customization(before and after), with selectedResources, all verbs set', () => {
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
+    let rikCustomizationMock = {
       setupRouterBeforeApi: sinon.spy(),
       setupRouterAfterApi: sinon.spy()
     };
@@ -120,22 +120,22 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
 
       }
     };
-    let iunctioHomeManagerMock = {
-      getExpressCustomization: () => iunctioCustomizationMock,
+    let rikHomeManagerMock = {
+      getExpressCustomization: () => rikCustomizationMock,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
         cors: []
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -151,8 +151,8 @@ describe('CommonBuilder', () => {
     let builder = new CommonBuilder();
     builder.setupResourcesRoutes('v1', router, resources);
 
-    expect(iunctioCustomizationMock.setupRouterBeforeApi.called, 'Expect iunctioCustomizationMock.setupRouterBeforeApi to be called').to.be.true;
-    expect(iunctioCustomizationMock.setupRouterAfterApi.called, 'Expect iunctioCustomizationMock.setupRouterAfterApi to be called').to.be.true;
+    expect(rikCustomizationMock.setupRouterBeforeApi.called, 'Expect rikCustomizationMock.setupRouterBeforeApi to be called').to.be.true;
+    expect(rikCustomizationMock.setupRouterAfterApi.called, 'Expect rikCustomizationMock.setupRouterAfterApi to be called').to.be.true;
     expect(router.options.args[0][1], 'Expect router.options to be called with a function').to.not.be.undefined;
     expect(router.get.args[0][1], 'Expect router.get to be called').to.not.be.undefined;
     expect(router.post.args[0][1], 'Expect router.post to be called').to.not.be.undefined;
@@ -178,10 +178,10 @@ describe('CommonBuilder', () => {
     expect(res.send.calledWith(), 'Expect res.send to be called with no arguments').to.be.true;
   });
 
-  it('Should successfully setupResourcesRoutes, with iunctio customization(w/o before and after), with selectedResources, all verbs set', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
-    let iunctioCustomizationMock = {
+  it('Should successfully setupResourcesRoutes, with rik customization(w/o before and after), with selectedResources, all verbs set', () => {
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
+    let rikCustomizationMock = {
     };
     let resourceConfigMock = {
       metadata: {
@@ -195,22 +195,22 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
 
       }
     };
-    let iunctioHomeManagerMock = {
-      getExpressCustomization: () => iunctioCustomizationMock,
+    let rikHomeManagerMock = {
+      getExpressCustomization: () => rikCustomizationMock,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
         cors: []
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -251,9 +251,9 @@ describe('CommonBuilder', () => {
     expect(res.send.calledWith(), 'Expect res.send to be called with no arguments').to.be.true;
   });
 
-  it('Should successfully setupResourcesRoutes, without iunctio customization, with selectedResources, all verbs set', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+  it('Should successfully setupResourcesRoutes, without rik customization, with selectedResources, all verbs set', () => {
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let resourceConfigMock = {
       metadata: {
         name: 'mock'
@@ -266,14 +266,14 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
 
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -281,7 +281,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -324,8 +324,8 @@ describe('CommonBuilder', () => {
 
   
   it('Should successfully _createHandler and run it', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let mockApiResponse = {
       body: {},
       header: {
@@ -345,14 +345,14 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
 
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -360,7 +360,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -384,8 +384,8 @@ describe('CommonBuilder', () => {
 
   
   it('Should successfully _createHandler and run it, with request validation error', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let mockApiResponse = {
       body: {}
     };
@@ -402,16 +402,16 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
         return {
           error: 'mock error'
         };
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -419,7 +419,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -440,8 +440,8 @@ describe('CommonBuilder', () => {
   });
   
   it('Should successfully _createHandler and run it, with response containing error status code', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let mockApiResponse = {
       statusCode: 410,
       body: {}
@@ -459,13 +459,13 @@ describe('CommonBuilder', () => {
       }
     }
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -473,7 +473,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -495,8 +495,8 @@ describe('CommonBuilder', () => {
   });
   
   it('Should successfully _createHandler and run it, with response validation error', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let mockApiResponse = {
       body: {}
     };
@@ -514,13 +514,13 @@ describe('CommonBuilder', () => {
     }
     class SchemaValidationMock {
       constructor(){
-        this.validateIunctioObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
+        this.validateRIKObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
       }
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -528,7 +528,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -550,8 +550,8 @@ describe('CommonBuilder', () => {
   });
   
   it('Should successfully _createHandler and run it, with catch promise rejection', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
     let mockApiResponse = {
       body: {}
     };
@@ -569,13 +569,13 @@ describe('CommonBuilder', () => {
     }
     class SchemaValidationMock {
       constructor(){
-        this.validateIunctioObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
+        this.validateRIKObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
       }
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -583,7 +583,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -604,9 +604,9 @@ describe('CommonBuilder', () => {
   });
   
   it('Should successfully _createHandler and run it, with catch promise rejection (debug enabled)', () => {
-    delete process.env.IUNCTIO_RESOURCES;
-    process.env.IUNCTIO_RESOURCES = 'customer';
-    process.env.IUNCTIO_DEBUG = true;
+    delete process.env.RIK_RESOURCES;
+    process.env.RIK_RESOURCES = 'customer';
+    process.env.RIK_DEBUG = true;
     let mockApiResponse = {
       body: {}
     };
@@ -624,13 +624,13 @@ describe('CommonBuilder', () => {
     }
     class SchemaValidationMock {
       constructor(){
-        this.validateIunctioObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
+        this.validateRIKObject = sinon.stub().onSecondCall().returns({error: 'mock response error'});
       }
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -638,7 +638,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -659,14 +659,14 @@ describe('CommonBuilder', () => {
   });
   
   it('Should successfully _createDisabledHandler and run it', () => {
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
         cors: []
       })
     };
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -686,13 +686,13 @@ describe('CommonBuilder', () => {
   
   it('Should successfully _setResourceVerbsHandlers, with undefined verbs (post defined) and subresource of', () => {
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -700,7 +700,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 
@@ -737,13 +737,13 @@ describe('CommonBuilder', () => {
   
   it('Should successfully _setResourceVerbsHandlers, with undefined verbs (post undefined) and subresource of', () => {
     class SchemaValidationMock {
-      resolveIunctioSchema() {
+      resolveRIKSchema() {
 
       }
-      validateIunctioObject() {
+      validateRIKObject() {
       }
     };
-    let iunctioHomeManagerMock = {
+    let rikHomeManagerMock = {
       getExpressCustomization: () => undefined,
       getResourceConfig: () => resourceConfigMock,
       getSettings: () => ({
@@ -751,7 +751,7 @@ describe('CommonBuilder', () => {
       })
     };
     mockery.registerMock('./../schema-validation', SchemaValidationMock);
-    mockery.registerMock('../iunctio-home.manager', iunctioHomeManagerMock);
+    mockery.registerMock('../rik-home.manager', rikHomeManagerMock);
 
     const CommonBuilder = require('./common-builder');
 

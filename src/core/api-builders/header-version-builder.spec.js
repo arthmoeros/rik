@@ -11,7 +11,7 @@ describe('HeaderVersionBuilder', () => {
       warnOnUnregistered: false,
       useCleanCache: true
     });
-    mockery.registerMock('../../support/iunctio-logger', {
+    mockery.registerMock('../../support/rik-logger', {
       info: () => {},
       warn: () => {},
       error: () => {},
@@ -46,7 +46,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -55,7 +55,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -94,7 +94,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: true
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -103,7 +103,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -142,7 +142,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -151,7 +151,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -192,7 +192,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -201,7 +201,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -241,7 +241,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -250,7 +250,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -290,7 +290,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -299,7 +299,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     
@@ -336,7 +336,7 @@ describe('HeaderVersionBuilder', () => {
         enforceVersionHeader: false
       }
     };
-    let mockIunctioHomeManager = {
+    let mockRIKHomeManager = {
       getSettings: () => mockSettings
     };
     const routerMock = sinon.spy();
@@ -345,7 +345,7 @@ describe('HeaderVersionBuilder', () => {
     };
     mockery.registerMock('express', expressMock);
     mockery.registerMock('./common-builder', CommonBuilderMock);
-    mockery.registerMock('./../iunctio-home.manager', mockIunctioHomeManager);
+    mockery.registerMock('./../rik-home.manager', mockRIKHomeManager);
 
     const PathVersionBuilder = require('./header-version-builder');
     

@@ -1,6 +1,6 @@
 {
   "name": "rik",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Resource Interface Kit for Express.js",
   "main": "index.js",
   "scripts": {

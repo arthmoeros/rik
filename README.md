@@ -27,6 +27,9 @@ You will have a working API like this...
 
 ![Example Step 2 RIK](https://raw.githubusercontent.com/arthmoeros/rik/master/docs/aux2.png)
 
+## Easy setup
+You can use the recent RIK CLI published on npm for easy bootstrap of a RIK project, [check it out here](https://github.com/arthmoeros/rik-cli).
+
 ## Running it
 First, install it on your base project:
 
